@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function LessonsPage() {
     const [nationality, setNationality] = useState<string>("uz");
@@ -18,25 +19,27 @@ export default function LessonsPage() {
     const content = {
         uz: {
             badge: "25 TA VIDEO DARS",
-            title: '"Salom"dan boshlab professional darajaga!',
-            subtitle: "Yapon tilini suhbat orqali o'rganing",
-            description:
-                "Real hayotiy vaziyatlarga asoslangan video darslar orqali yapon tilida erkin suhbatlashishni o'rganing. Har bir dars - bu yangi imkoniyat!",
+            hero: {
+                title: '"Salom"dan boshlab professional darajaga!',
+                subtitle: "Real hayotiy vaziyatlarga asoslangan video darslar orqali yapon tilida erkin suhbatlashishni o'rganing.",
+                cta: "Darslarni boshlash",
+                secondary: "Bepul darsni ko'rish"
+            },
             features: [
                 {
                     icon: "🎯",
                     title: "Maqsadli yondashuv",
-                    desc: "Har bir darsda eng zarur iboralar",
+                    desc: "Har bir darsda eng zarur iboralar va grammatik qoidalar.",
                 },
                 {
                     icon: "🗣️",
                     title: "Real suhbatlar",
-                    desc: "Haqiqiy hayotdan olingan dialoglar",
+                    desc: "Haqiqiy hayotdan olingan dialoglar va vaziyatlar.",
                 },
                 {
                     icon: "⚡",
                     title: "Tez natija",
-                    desc: "O'zbek misollari bilan oson o'rganish",
+                    desc: "O'zbek misollari bilan oson va samarali o'rganish.",
                 },
             ],
             stats: [
@@ -45,23 +48,12 @@ export default function LessonsPage() {
                 { number: "50+", label: "Suhbat namunasi" },
             ],
             process: {
-                title: "Qanday ishlaydi?",
+                title: "Qanday o'rganamiz?",
                 steps: [
-                    {
-                        number: "01",
-                        title: "Video tomosha qiling",
-                        desc: "Har bir darsda real vaziyatlarni ko'ring",
-                    },
-                    {
-                        number: "02",
-                        title: "Takrorlang",
-                        desc: "O'rgangan iboralaringizni amaliyotda sinab ko'ring",
-                    },
-                    {
-                        number: "03",
-                        title: "Mashq qiling",
-                        desc: "Interaktiv mashqlar orqali mustahkamlang",
-                    },
+                    "Video darsni tomosha qiling",
+                    "Yangi iboralarni takrorlang",
+                    "Mashqlar orqali mustahkamlang",
+                    "Amaliyotda qo'llashni boshlang"
                 ],
             },
             testimonials: {
@@ -81,30 +73,31 @@ export default function LessonsPage() {
                     },
                 ],
             },
-            button: "Darslarni boshlash",
-            secondaryButton: "Bepul darsni ko'rish",
+            finalCta: "Yapon tilini bugunoq boshlang!"
         },
         ja: {
             badge: "25のビデオレッスン",
-            title: "会話から始めるウズベク語マスター！",
-            subtitle: "実践的な会話でウズベク語を学ぶ",
-            description:
-                "実生活のシチュエーションに基づいたビデオレッスンで、ウズベク語での自由な会話を学びます。各レッスンは新しい可能性です！",
+            hero: {
+                title: "会話から始めるウズベク語マスター！",
+                subtitle: "実生活のシチュエーションに基づいたビデオレッスンで、ウズベク語での自由な会話を学びます。",
+                cta: "レッスンを開始",
+                secondary: "無料レッスンを見る"
+            },
             features: [
                 {
                     icon: "🎯",
                     title: "目標指向のアプローチ",
-                    desc: "各レッスンで最も必要なフレーズ",
+                    desc: "各レッスンで最も必要なフレーズと文法規則。",
                 },
                 {
                     icon: "🗣️",
                     title: "実際の会話",
-                    desc: "実生活から取られた対話",
+                    desc: "実生活から取られた対話とシチュエーション。",
                 },
                 {
                     icon: "⚡",
                     title: "速い結果",
-                    desc: "日本語の例で簡単に学習",
+                    desc: "日本語の例で簡単かつ効果的な学習。",
                 },
             ],
             stats: [
@@ -115,21 +108,10 @@ export default function LessonsPage() {
             process: {
                 title: "どのように機能しますか？",
                 steps: [
-                    {
-                        number: "01",
-                        title: "ビデオを見る",
-                        desc: "各レッスンで実際の状況を見る",
-                    },
-                    {
-                        number: "02",
-                        title: "繰り返す",
-                        desc: "学んだフレーズを実践で試す",
-                    },
-                    {
-                        number: "03",
-                        title: "練習する",
-                        desc: "インタラクティブな演習で強化",
-                    },
+                    "ビデオレッスンを視聴する",
+                    "新しいフレーズを繰り返す",
+                    "演習で知識を強化する",
+                    "実践で使い始める"
                 ],
             },
             testimonials: {
@@ -149,262 +131,272 @@ export default function LessonsPage() {
                     },
                 ],
             },
-            button: "レッスンを開始",
-            secondaryButton: "無料レッスンを見る",
+            finalCta: "今日からウズベク語を始めましょう！"
         },
     };
 
     const t = content[nationality as keyof typeof content];
 
+    const handleStart = () => {
+        const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+        if (token) {
+            window.location.href = "/lessons/videos";
+        } else {
+            window.location.href = "/login";
+        }
+    };
+
     return (
-        <div className={`min-h-screen bg-gradient-to-br ${isUz ? "from-blue-50 via-white to-purple-50" : "from-orange-50 via-white to-amber-50"}`}>
+        <div className="min-h-screen bg-[#FFF4E6] flex flex-col font-sans selection:bg-blue-200">
             <Header />
 
-            {/* Hero Section */}
-            <section className="relative overflow-hidden">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className={`absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-pulse ${isUz ? "bg-blue-400/10" : "bg-orange-400/10"}`}></div>
-                    <div className={`absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-pulse delay-700 ${isUz ? "bg-purple-400/10" : "bg-red-400/10"}`}></div>
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r rounded-full blur-3xl ${isUz ? "from-blue-200/5 to-purple-200/5" : "from-orange-200/5 to-red-200/5"}`}></div>
-                </div>
+            <main className="flex-grow">
+                {/* Hero Section */}
+                <section className="relative pt-20 pb-20 overflow-hidden">
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-col lg:flex-row items-center gap-16">
+                            <div className="flex-1 text-center lg:text-left animate-in fade-in slide-in-from-left-12 duration-1000">
+                                <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-6 tracking-wider uppercase border-2 ${isUz ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-orange-50 text-orange-600 border-orange-100"}`}>
+                                    {t.badge}
+                                </span>
+                                <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                                    {t.hero.title}
+                                </h1>
+                                <p className="text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                    {t.hero.subtitle}
+                                </p>
+                                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                                    <button
+                                        onClick={handleStart}
+                                        className={`px-10 py-5 rounded-full font-black text-white text-lg shadow-2xl transition-all hover:scale-110 active:scale-95 duration-300 ${isUz ? "bg-blue-600 shadow-blue-500/40 hover:bg-blue-700" : "bg-[#FE9B19] shadow-orange-500/40 hover:bg-orange-600"}`}
+                                    >
+                                        {t.hero.cta}
+                                    </button>
+                                    <button
+                                        onClick={handleStart}
+                                        className="px-10 py-5 rounded-full font-black text-slate-700 bg-white shadow-xl hover:shadow-2xl transition-all hover:scale-110 active:scale-95 duration-300"
+                                    >
+                                        {t.hero.secondary}
+                                    </button>
+                                </div>
+                            </div>
 
-                <div className="container mx-auto px-6 py-20 relative z-10">
-                    <div className="max-w-7xl mx-auto">
-                        {/* Badge */}
-                        <div className="flex justify-center mb-8 animate-in fade-in duration-500">
-                            <div className={`inline-flex items-center gap-2 bg-gradient-to-r text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer ${isUz ? "from-blue-600 to-purple-600" : "from-[#FE9B19] to-orange-600"}`}>
-                                <svg className="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                                </svg>
-                                <span className="font-bold text-sm tracking-wider">{t.badge}</span>
+                            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300">
+                                <div className="relative z-10 w-full aspect-video max-w-xl mx-auto flex items-center justify-center">
+                                    {/* Main Lesson Video Card */}
+                                    <div className="relative z-20 w-[90%] aspect-video bg-slate-900 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden border border-slate-800 group cursor-pointer transform -rotate-1 hover:rotate-0 transition-all duration-700">
+                                        <Image
+                                            src="/lessons-cover.png"
+                                            alt="Lesson Cover"
+                                            fill
+                                            className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+
+                                        {/* Play Overlay */}
+                                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                                            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-500">
+                                                <svg className={`w-8 h-8 ml-1 ${isUz ? "text-blue-600" : "text-orange-500"}`} fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M6.3 2.841A.7.7 0 017 2.5a.7.7 0 01.442.159l8.4 6.3a.7.7 0 010 1.082l-8.4 6.3A.7.7 0 016.3 15.659V2.841z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        {/* Lesson Info Overlay */}
+                                        <div className="absolute bottom-6 left-8 right-8 z-20">
+                                            <div className="flex items-end justify-between gap-4">
+                                                <div>
+                                                    <div className="text-blue-400 text-xs font-black uppercase tracking-widest mb-1">Dars 05</div>
+                                                    <div className="text-white text-xl font-black">Xarid qilish: Bozorda</div>
+                                                </div>
+                                                <div className="text-white/60 text-sm font-bold">12:45</div>
+                                            </div>
+                                            <div className="mt-4 h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                                                <div className={`h-full w-2/3 ${isUz ? "bg-blue-500" : "bg-orange-500"} animate-pulse`}></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Next Lesson Floating Badge */}
+                                    <div className="absolute -top-6 -left-6 z-30 bg-white rounded-3xl p-4 shadow-2xl border border-slate-100 flex items-center gap-4 animate-bounce-slow">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${isUz ? "bg-blue-50" : "bg-orange-50"}`}>📖</div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Keyingi dars</div>
+                                            <div className="text-sm font-black text-slate-800">Grammatika: -masu</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Quiz Score Floating Badge */}
+                                    <div className="absolute -bottom-4 -right-4 z-30 bg-white/90 backdrop-blur-xl rounded-3xl p-5 shadow-2xl border border-white/50 animate-pulse-slow">
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative w-12 h-12">
+                                                <svg className="w-12 h-12 -rotate-90">
+                                                    <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="4" className="text-slate-100" />
+                                                    <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="4" className="text-green-500" strokeDasharray="125" strokeDashoffset="12.5" />
+                                                </svg>
+                                                <div className="absolute inset-0 flex items-center justify-center text-xs font-black text-slate-800">90%</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Oxirgi natija</div>
+                                                <div className="text-sm font-black text-slate-800">A'lo! 🌟</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Decorative UI elements */}
+                                    <div className="absolute -z-10 bg-white/40 inset-0 rounded-[3rem] blur-xl animate-pulse"></div>
+                                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] opacity-20 -z-20 rounded-full ${isUz ? "bg-blue-400" : "bg-orange-400"}`}></div>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </section>
 
-                        {/* Main Title */}
-                        <h1 className={`text-5xl md:text-6xl lg:text-7xl font-black text-center mb-6 animate-in slide-in-from-bottom duration-700 bg-gradient-to-r bg-clip-text text-transparent leading-tight ${isUz ? "from-gray-900 via-blue-900 to-purple-900" : "from-gray-900 via-orange-600 to-red-600"}`}>
-                            {t.title}
-                        </h1>
-
-                        {/* Subtitle */}
-                        <p className="text-2xl md:text-3xl text-center text-gray-600 font-semibold mb-8 animate-in fade-in duration-700 delay-200">
-                            {t.subtitle}
-                        </p>
-
-                        {/* Description */}
-                        <p className="text-lg md:text-xl text-center text-gray-600 max-w-3xl mx-auto mb-12 animate-in fade-in duration-700 delay-300 leading-relaxed">
-                            {t.description}
-                        </p>
-
-                        {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row justify-center gap-6 mb-16 animate-in zoom-in duration-700 delay-400">
-                            <button
-                                onClick={() => {
-                                    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-                                    if (token) {
-                                        window.location.href = "/lessons/videos";
-                                    } else {
-                                        window.location.href = "/login";
-                                    }
-                                }}
-                                className={`group relative inline-flex items-center justify-center gap-4 bg-gradient-to-r text-white px-12 py-6 rounded-full font-bold text-xl shadow-2xl transition-all hover:scale-110 active:scale-95 cursor-pointer ${isUz ? "from-blue-600 via-blue-700 to-purple-700 hover:from-blue-700 hover:via-purple-700 hover:to-purple-800 hover:shadow-blue-500/50" : "from-[#FE9B19] via-orange-600 to-red-600 hover:from-orange-600 hover:via-red-600 hover:to-red-700 hover:shadow-orange-500/50"}`}
-                            >
-                                <span className="relative z-10">{t.button}</span>
-                                <svg
-                                    className="w-7 h-7 group-hover:translate-x-2 transition-transform relative z-10"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={3}
-                                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                    />
-                                </svg>
-                                <div className="absolute inset-0 bg-white/20 rounded-full blur-xl group-hover:blur-2xl transition-all"></div>
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-                                    if (token) {
-                                        window.location.href = "/lessons/videos";
-                                    } else {
-                                        window.location.href = "/login";
-                                    }
-                                }}
-                                className="group inline-flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 px-12 py-6 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95 border-2 border-gray-200 cursor-pointer"
-                            >
-                                <svg className={`w-6 h-6 ${isUz ? "text-blue-600" : "text-[#FE9B19]"}`} fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                                </svg>
-                                <span>{t.secondaryButton}</span>
-                            </button>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-3 gap-8 max-w-4xl mx-auto mb-20 animate-in fade-in duration-700 delay-500">
+                {/* Stats Section */}
+                <section className="py-12">
+                    <div className="container mx-auto px-4">
+                        <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
                             {t.stats.map((stat, idx) => (
-                                <div
-                                    key={idx}
-                                    className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-gray-100 group"
-                                >
-                                    <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                                        {stat.number}
-                                    </div>
-                                    <div className="text-gray-600 font-semibold text-sm md:text-base">
-                                        {stat.label}
-                                    </div>
+                                <div key={idx} className="bg-white/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/50 text-center animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
+                                    <div className={`text-3xl md:text-5xl font-black mb-1 ${isUz ? "text-blue-600" : "text-orange-600"}`}>{stat.number}</div>
+                                    <div className="text-sm font-bold text-slate-500 uppercase tracking-tighter">{stat.label}</div>
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </section>
 
-                        {/* Features Grid */}
-                        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+                {/* Features Section */}
+                <section className="py-24 bg-white/60 backdrop-blur-xl border-y border-white">
+                    <div className="container mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {t.features.map((feature, idx) => (
                                 <div
                                     key={idx}
-                                    className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 animate-in fade-in duration-700"
-                                    style={{ animationDelay: `${(idx + 6) * 100}ms` }}
+                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8"
+                                    style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'both' }}
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10 blur-xl"></div>
-
-                                    <div className="text-5xl mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm group-hover:shadow-lg ${isUz ? "bg-blue-50" : "bg-orange-50"}`}>
                                         {feature.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                                        {feature.title}
-                                    </h3>
-                                    <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                                    <h3 className="text-2xl font-black text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                                    <p className="text-slate-600 leading-relaxed font-medium">
+                                        {feature.desc}
+                                    </p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Process Section */}
-            <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50/30">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
-                            {t.process.title}
-                        </h2>
+                {/* Process Section */}
+                <section className="py-32 relative overflow-hidden">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-4xl mx-auto text-center mb-20">
+                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8">{t.process.title}</h2>
+                        </div>
 
-                        <div className="grid md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {t.process.steps.map((step, idx) => (
                                 <div
                                     key={idx}
-                                    className="relative group"
-                                    style={{ animationDelay: `${idx * 200}ms` }}
+                                    className="relative animate-in fade-in zoom-in"
+                                    style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}
                                 >
-                                    {/* Connector Line */}
-                                    {idx < t.process.steps.length - 1 && (
-                                        <div className="hidden md:block absolute top-16 left-full w-full h-1 bg-gradient-to-r from-blue-300 to-purple-300 -translate-x-1/2 z-0"></div>
-                                    )}
-
-                                    <div className="relative bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100">
-                                        <div className="text-6xl font-black text-transparent bg-gradient-to-br from-blue-600 to-purple-600 bg-clip-text mb-4 group-hover:scale-110 transition-transform">
-                                            {step.number}
+                                    <div className="bg-white rounded-[2rem] p-8 h-full border border-slate-100 shadow-xl relative z-10 group hover:bg-slate-900 transition-all duration-500 cursor-default">
+                                        <div className={`text-6xl font-black mb-6 opacity-20 ${isUz ? "text-blue-600" : "text-orange-600"} group-hover:text-white group-hover:opacity-10 group-hover:scale-110 transition-all duration-500`}>
+                                            0{idx + 1}
                                         </div>
-                                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                                            {step.title}
-                                        </h3>
-                                        <p className="text-gray-600 leading-relaxed">{step.desc}</p>
+                                        <p className="text-xl font-bold text-slate-800 group-hover:text-white transition-all leading-tight">
+                                            {step}
+                                        </p>
                                     </div>
+                                    {idx < 3 && (
+                                        <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-slate-200 z-0 group-hover:bg-slate-400 transition-colors"></div>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Testimonials Section */}
-            <section className="py-20">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent">
+                {/* Testimonials Section */}
+                <section className="py-24 bg-white/60 backdrop-blur-xl border-y border-white">
+                    <div className="container mx-auto px-4">
+                        <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-slate-900">
                             {t.testimonials.title}
                         </h2>
-
-                        <div className="grid md:grid-cols-2 gap-8">
+                        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                             {t.testimonials.items.map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-gray-100"
+                                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500 animate-in fade-in slide-in-from-right-8"
+                                    style={{ animationDelay: `${idx * 300}ms`, animationFillMode: 'both' }}
                                 >
-                                    <div className="flex gap-1 mb-4">
+                                    <div className="flex gap-1 mb-6">
                                         {[...Array(item.rating)].map((_, i) => (
-                                            <svg
-                                                key={i}
-                                                className="w-6 h-6 text-yellow-400"
-                                                fill="currentColor"
-                                                viewBox="0 0 20 20"
-                                            >
+                                            <svg key={i} className="w-6 h-6 text-yellow-400 animate-pulse" style={{ animationDelay: `${i * 100}ms` }} fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                             </svg>
                                         ))}
                                     </div>
-                                    <p className="text-gray-700 text-lg mb-6 italic leading-relaxed">
-                                        "{item.text}"
-                                    </p>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    <p className="text-xl text-slate-600 mb-8 italic leading-relaxed">"{item.text}"</p>
+                                    <div className="flex items-center gap-4 group/author">
+                                        <div className={`w-14 h-14 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-lg transform group-hover/author:scale-110 transition-transform duration-300 ${isUz ? "bg-blue-600" : "bg-orange-600"}`}>
                                             {item.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-gray-900">{item.name}</div>
-                                            <div className="text-gray-500 text-sm">{item.role}</div>
+                                            <div className="font-black text-slate-900 text-lg group-hover/author:text-blue-600 transition-colors">{item.name}</div>
+                                            <div className="text-slate-500 font-bold">{item.role}</div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Final CTA */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
-                <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-                        {nationality === "uz" ? "Bugun boshlang!" : "今日から始めよう！"}
-                    </h2>
-                    <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                        {nationality === "uz"
-                            ? "Birinchi darsni bepul tomosha qiling va o'zingiz baholang!"
-                            : "最初のレッスンを無料で視聴して、自分で評価してください！"}
-                    </p>
-                    <button
-                        onClick={() => {
-                            const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-                            if (token) {
-                                window.location.href = "/lessons/videos";
-                            } else {
-                                window.location.href = "/login";
-                            }
-                        }}
-                        className="inline-flex items-center gap-4 bg-white text-blue-600 px-12 py-6 rounded-full font-bold text-xl shadow-2xl hover:shadow-white/50 transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                    >
-                        <span>{t.button}</span>
-                        <svg
-                            className="w-7 h-7"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={3}
-                                d="M13 7l5 5m0 0l-5 5m5-5H6"
-                            />
-                        </svg>
-                    </button>
-                </div>
-            </section>
+                {/* Final CTA */}
+                <section className="py-32">
+                    <div className="container mx-auto px-4">
+                        <div className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-[#FE9B19] shadow-orange-500/20"}`}>
+                            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                                <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+                                <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
+                            </div>
+
+                            <h2 className="text-4xl md:text-6xl font-black text-white mb-10 leading-tight tracking-tight relative z-10">
+                                {t.finalCta}
+                            </h2>
+                            <button
+                                onClick={handleStart}
+                                className="px-12 py-6 bg-white text-slate-900 rounded-full font-black text-xl shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 relative z-10"
+                            >
+                                {isUz ? "Hozir boshlang" : "今すぐ始める"}
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <Footer />
+
+            <style jsx>{`
+                @keyframes pulse-slow {
+                    0%, 100% { transform: scale(1) rotate(2deg); opacity: 0.4; }
+                    50% { transform: scale(1.05) rotate(4deg); opacity: 0.6; }
+                }
+                .animate-pulse-slow {
+                    animation: pulse-slow 8s infinite ease-in-out;
+                }
+                @keyframes bounce-slow {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-20px); }
+                }
+                .animate-bounce-slow {
+                    animation: bounce-slow 5s infinite ease-in-out;
+                }
+            `}</style>
         </div>
     );
 }

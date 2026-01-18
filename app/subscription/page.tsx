@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../lib/auth";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 interface SubscriptionPlan {
     id: number;
@@ -153,6 +154,7 @@ export default function SubscriptionPage() {
                     </div>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

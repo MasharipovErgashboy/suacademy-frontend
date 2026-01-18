@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../../lib/auth";
 import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
 
 interface SubscriptionPlan {
     id: number;
@@ -245,6 +246,7 @@ export default function PaymentPage() {
 
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../lib/auth";
 import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 interface Lesson {
     id: number;
@@ -218,6 +219,7 @@ export default function VideoLessonsPage() {
                     </>
                 )}
             </main>
+            <Footer />
         </div>
     );
 }

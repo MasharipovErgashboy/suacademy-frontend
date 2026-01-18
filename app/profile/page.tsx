@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BACKEND_URL, API_BASE_URL, fetchWithAuth, isAuthenticated, User } from "../lib/auth";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 interface Notification {
     id: number;
@@ -472,6 +473,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }
