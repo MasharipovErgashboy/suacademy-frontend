@@ -128,7 +128,17 @@ export default function FlashcardsPage() {
 
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Header */}
-                <div className="text-center mb-8">
+                <div className="text-center mb-8 relative">
+                    {/* Back Button - Top Right */}
+                    <button
+                        onClick={() => router.push("/vocabulary/topics")}
+                        className={`absolute top-0 right-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 ${isUz ? "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-200"}`}
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+
                     <h1 className="text-4xl font-black text-slate-900 mb-3">
                         {isUz ? "Lug'at Kartalari" : "フラッシュカード"}
                     </h1>
@@ -219,8 +229,8 @@ export default function FlashcardsPage() {
                                 onClick={handlePrevious}
                                 disabled={currentIndex === 0}
                                 className={`px-8 py-4 rounded-xl font-bold transition-all ${currentIndex === 0
-                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                        : "bg-white text-slate-700 hover:bg-slate-50 shadow-lg hover:shadow-xl"
+                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    : "bg-white text-slate-700 hover:bg-slate-50 shadow-lg hover:shadow-xl"
                                     }`}
                             >
                                 ← {isUz ? "Oldingi" : "前へ"}
@@ -229,8 +239,8 @@ export default function FlashcardsPage() {
                                 onClick={handleNext}
                                 disabled={currentIndex === words.length - 1}
                                 className={`px-8 py-4 rounded-xl font-bold transition-all ${currentIndex === words.length - 1
-                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                        : isUz ? "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-200 hover:shadow-xl" : "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-200 hover:shadow-xl"
+                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    : isUz ? "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-200 hover:shadow-xl" : "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-200 hover:shadow-xl"
                                     }`}
                             >
                                 {isUz ? "Keyingi" : "次へ"} →
@@ -243,16 +253,6 @@ export default function FlashcardsPage() {
                         </div>
                     </>
                 )}
-
-                {/* Back Button */}
-                <div className="mt-8 text-center">
-                    <button
-                        onClick={() => router.push("/vocabulary/topics")}
-                        className="px-8 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-all"
-                    >
-                        {isUz ? "← Orqaga" : "← 戻る"}
-                    </button>
-                </div>
             </div>
 
             <style jsx>{`

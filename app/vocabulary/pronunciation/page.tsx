@@ -122,7 +122,17 @@ export default function PronunciationPage() {
 
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Header */}
-                <div className="text-center mb-8">
+                <div className="text-center mb-8 relative">
+                    {/* Back Button - Top Right */}
+                    <button
+                        onClick={() => router.push("/vocabulary/topics")}
+                        className={`absolute top-0 right-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 ${isUz ? "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-200"}`}
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+
                     <h1 className="text-4xl font-black text-slate-900 mb-3">
                         {isUz ? "Talaffuz Mashqlari" : "発音練習"}
                     </h1>
@@ -187,10 +197,10 @@ export default function PronunciationPage() {
                             <div
                                 key={word.id}
                                 className={`bg-white rounded-2xl p-6 shadow-lg border-2 transition-all duration-300 ${completedWords.has(word.id)
-                                        ? "border-green-200 bg-green-50"
-                                        : playingId === word.id
-                                            ? isUz ? "border-blue-500 shadow-blue-200" : "border-orange-500 shadow-orange-200"
-                                            : "border-slate-200 hover:border-slate-300"
+                                    ? "border-green-200 bg-green-50"
+                                    : playingId === word.id
+                                        ? isUz ? "border-blue-500 shadow-blue-200" : "border-orange-500 shadow-orange-200"
+                                        : "border-slate-200 hover:border-slate-300"
                                     }`}
                             >
                                 <div className="flex items-center gap-6">
@@ -199,10 +209,10 @@ export default function PronunciationPage() {
                                         onClick={() => playAudio(word.id, word.audio)}
                                         disabled={!word.audio}
                                         className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center transition-all ${!word.audio
-                                                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                                : playingId === word.id
-                                                    ? isUz ? "bg-blue-500 text-white shadow-lg shadow-blue-300 scale-110" : "bg-orange-500 text-white shadow-lg shadow-orange-300 scale-110"
-                                                    : isUz ? "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105" : "bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105"
+                                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                            : playingId === word.id
+                                                ? isUz ? "bg-blue-500 text-white shadow-lg shadow-blue-300 scale-110" : "bg-orange-500 text-white shadow-lg shadow-orange-300 scale-110"
+                                                : isUz ? "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105" : "bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105"
                                             }`}
                                     >
                                         {playingId === word.id ? (
@@ -238,16 +248,6 @@ export default function PronunciationPage() {
                             </div>
                         ))
                     )}
-                </div>
-
-                {/* Back Button */}
-                <div className="mt-8 text-center">
-                    <button
-                        onClick={() => router.push("/vocabulary/topics")}
-                        className="px-8 py-3 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-all"
-                    >
-                        {isUz ? "← Orqaga" : "← 戻る"}
-                    </button>
                 </div>
             </div>
         </div>
