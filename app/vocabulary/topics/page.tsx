@@ -191,11 +191,11 @@ export default function VocabularyDashboardPage() {
                             {isUz ? "Vositalar" : "ツール"}
                         </h3>
                         <div className="flex flex-col gap-3">
-                            <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "blue" : "orange"}-100 hover:bg-${isUz ? "blue" : "orange"}-50/30 transition-all text-left group`}>
+                            <button onClick={() => router.push("/vocabulary/pronunciation")} className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "blue" : "orange"}-100 hover:bg-${isUz ? "blue" : "orange"}-50/30 transition-all text-left group`}>
                                 <span className={`bg-${isUz ? "blue" : "orange"}-50 ${primaryTextClass} w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>🔊</span>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">{isUz ? "Talaffuz" : "発音"}</span>
                             </button>
-                            <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "orange" : "blue"}-100 hover:bg-${isUz ? "orange" : "blue"}-50/30 transition-all text-left group`}>
+                            <button onClick={() => router.push("/vocabulary/flashcards")} className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "orange" : "blue"}-100 hover:bg-${isUz ? "orange" : "blue"}-50/30 transition-all text-left group`}>
                                 <span className={`bg-${isUz ? "orange" : "blue"}-50 text-${isUz ? "orange" : "blue"}-600 w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>✨</span>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">{isUz ? "Kartalar" : "カード"}</span>
                             </button>
