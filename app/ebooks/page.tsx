@@ -255,25 +255,66 @@ export default function EBookPage() {
                             {t.partners.title}
                         </h2>
                         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                            {[
-                                { ...t.partners.library, icon: "🏛️" },
-                                { ...t.partners.asaxiy, icon: "📚" },
-                                { ...t.partners.sarmoya, icon: "📖" }
-                            ].map((partner, idx) => (
-                                <div
-                                    key={idx}
-                                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group"
-                                    style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}
-                                >
-                                    <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                                        {partner.icon}
+                            {/* National Library */}
+                            <div
+                                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-[2.5rem] border-2 border-blue-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
+                                style={{ animationDelay: '0ms', animationFillMode: 'both' }}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                                <div className="relative z-10">
+                                    <div className="mb-6 flex items-center justify-center h-24">
+                                        <Image
+                                            src="/library-logo.png"
+                                            alt="National Library Logo"
+                                            width={200}
+                                            height={96}
+                                            className="object-contain transform group-hover:scale-110 transition-transform duration-500"
+                                        />
                                     </div>
-                                    <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight">
-                                        {partner.name}
+                                    <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight text-center">
+                                        {t.partners.library.name}
                                     </h3>
-                                    <p className="text-slate-600 font-medium">{partner.desc}</p>
+                                    <p className="text-slate-700 font-bold text-center">{t.partners.library.desc}</p>
                                 </div>
-                            ))}
+                            </div>
+
+                            {/* Asaxiy Market */}
+                            <div
+                                className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-[2.5rem] border-2 border-orange-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
+                                style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                                <div className="relative z-10">
+                                    <div className="mb-6 flex items-center justify-center h-24">
+                                        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white text-4xl font-black shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                            A
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight text-center">
+                                        {t.partners.asaxiy.name}
+                                    </h3>
+                                    <p className="text-slate-700 font-bold text-center">{t.partners.asaxiy.desc}</p>
+                                </div>
+                            </div>
+
+                            {/* Sarmoya Books */}
+                            <div
+                                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-[2.5rem] border-2 border-green-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
+                                style={{ animationDelay: '400ms', animationFillMode: 'both' }}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                                <div className="relative z-10">
+                                    <div className="mb-6 flex items-center justify-center h-24">
+                                        <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-4xl font-black shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                            S
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight text-center">
+                                        {t.partners.sarmoya.name}
+                                    </h3>
+                                    <p className="text-slate-700 font-bold text-center">{t.partners.sarmoya.desc}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
