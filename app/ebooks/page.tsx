@@ -286,9 +286,13 @@ export default function EBookPage() {
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-orange-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
                                 <div className="relative z-10">
                                     <div className="mb-6 flex items-center justify-center h-24">
-                                        <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white text-4xl font-black shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                                            A
-                                        </div>
+                                        <Image
+                                            src="/asaxiy-logo.png"
+                                            alt="Asaxiy Market Logo"
+                                            width={80}
+                                            height={96}
+                                            className="object-contain transform group-hover:scale-110 transition-transform duration-500"
+                                        />
                                     </div>
                                     <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight text-center">
                                         {t.partners.asaxiy.name}
