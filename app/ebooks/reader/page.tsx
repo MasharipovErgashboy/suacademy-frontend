@@ -5,12 +5,27 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated, fetchWithAuth, BACKEND_URL } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { Document, Page, pdfjs } from 'react-pdf';
+import dynamic from "next/dynamic";
+
+// Dynamically import react-pdf components with no SSR
+const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), {
+    ssr: false,
+    loading: () => <div className="animate-spin w-12 h-12 border-4 rounded-full border-t-transparent border-blue-500"></div>
+});
+
+const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), {
+    ssr: false
+});
+
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configure PDF worker
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+// Import pdfjs only on client side
+import { pdfjs } from 'react-pdf';
+
+if (typeof window !== "undefined") {
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+}
 
 export default function EBookReaderPage() {
     const router = useRouter();
