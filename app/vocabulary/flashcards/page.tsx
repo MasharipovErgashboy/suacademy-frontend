@@ -129,10 +129,10 @@ export default function FlashcardsPage() {
             <div className="max-w-4xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="text-center mb-8 relative">
-                    {/* Back Button - Top Right */}
+                    {/* Back Button - Top Left */}
                     <button
                         onClick={() => router.push("/vocabulary/topics")}
-                        className={`absolute top-0 right-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 ${isUz ? "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-200"}`}
+                        className={`absolute top-0 left-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 ${isUz ? "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-200" : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-200"}`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
