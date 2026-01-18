@@ -9,13 +9,6 @@ import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { pdfjs } from 'react-pdf';
 
-// Configure worker directly here to ensure it applies
-if (typeof window !== "undefined") {
-    // Standard CDN URL for react-pdf v7.7.1 (pdfjs-dist v3.11.174)
-    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-    console.log(`PDF Worker configured for version ${pdfjs.version}`);
-}
-
 // Dynamically import react-pdf components with no SSR
 const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), {
     ssr: false,
@@ -28,6 +21,15 @@ const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), {
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+
+// Configure worker options object to be passed directly to Document
+// This is the most robust way to ensure the worker is loaded correctly in v7
+const pdfOptions = {
+    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+    workerSrc: `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+};
 
 const variants = {
     enter: (direction: number) => ({
@@ -203,6 +205,7 @@ export default function EBookReaderPage() {
                                             <p>Xatolik yuz berdi</p>
                                         </div>
                                     }
+                                    options={pdfOptions}
                                 >
                                     <AnimatePresence initial={false} custom={direction} mode="wait">
                                         <motion.div
@@ -260,7 +263,6 @@ export default function EBookReaderPage() {
                     body { display: none; }
                 }
             `}</style>
-
             <Footer />
         </div>
     );
