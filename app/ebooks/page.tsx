@@ -150,7 +150,7 @@ export default function EBookPage() {
                                     {/* Book Cover Image */}
                                     <div className="relative aspect-[3/4] rounded-[2rem] shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 animate-float">
                                         <Image
-                                            src="/book-cover.png"
+                                            src="/book-cover.png?v=2"
                                             alt="Bir Kunda Bir Suhbat Book Cover"
                                             fill
                                             className="object-cover"
