@@ -354,7 +354,7 @@ export default function EBookPage() {
                                 {t.finalCta.subtitle}
                             </p>
                             <button
-                                onClick={() => {/* Will add reader page later */ }}
+                                onClick={handleStartReading}
                                 className="px-12 py-6 bg-white text-slate-900 rounded-full font-black text-xl shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 relative z-10"
                             >
                                 {t.finalCta.button}
