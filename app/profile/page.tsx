@@ -517,7 +517,7 @@ export default function ProfilePage() {
                                     localStorage.removeItem("user");
                                     localStorage.removeItem("user_data");
                                     window.dispatchEvent(new Event("user-updated"));
-                                    router.push("/login");
+                                    router.push("/");
                                 }}
                                 className="flex-1 px-6 py-3.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 transition-all active:scale-95"
                             >
