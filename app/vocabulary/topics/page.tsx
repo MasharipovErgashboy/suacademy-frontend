@@ -34,7 +34,13 @@ export default function VocabularyDashboardPage() {
     const [loadingTopics, setLoadingTopics] = useState(true);
     const [loadingDetail, setLoadingDetail] = useState(false);
     const [error, setError] = useState("");
-    const [nationality, setNationality] = useState<string>("uz");
+    const [nationality, setNationality] = useState<string>(() => {
+        // Initialize from localStorage immediately to prevent flickering
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("nationality") || "uz";
+        }
+        return "uz";
+    });
     const [searchQuery, setSearchQuery] = useState("");
     const [playingId, setPlayingId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,9 +52,6 @@ export default function VocabularyDashboardPage() {
             router.push("/login");
             return;
         }
-
-        const saved = localStorage.getItem("nationality");
-        if (saved) setNationality(saved);
 
         fetchInitialData();
     }, [router]);

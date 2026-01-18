@@ -6,12 +6,13 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 
 export default function VocabularyPage() {
-    const [nationality, setNationality] = useState<string>("uz");
-
-    useEffect(() => {
-        const saved = localStorage.getItem("nationality");
-        if (saved) setNationality(saved);
-    }, []);
+    const [nationality, setNationality] = useState<string>(() => {
+        // Initialize from localStorage immediately to prevent flickering
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("nationality") || "uz";
+        }
+        return "uz";
+    });
 
     const content = {
         uz: {
