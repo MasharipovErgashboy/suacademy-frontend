@@ -85,10 +85,13 @@ export default function EBookReaderPage() {
                 const url = URL.createObjectURL(blob);
                 setPdfUrl(url);
             } else {
-                console.error("Failed to fetch PDF");
+                // Gracefully handle missing book or other errors without spamming console.error
+                setPdfUrl(null);
             }
         } catch (err) {
-            console.error(err);
+            // Network errors or other fetch issues
+            console.warn("PDF fetch warning:", err); // Use warn instead of error
+            setPdfUrl(null);
         } finally {
             setLoading(false);
         }
