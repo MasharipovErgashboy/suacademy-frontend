@@ -89,10 +89,24 @@ export default function VocabularyDashboardPage() {
 
     const playAudio = (wordId: number, audioUrl: string | null) => {
         if (!audioUrl) return;
+
+        // If clicking the same word that is currently playing
+        if (playingId === wordId) {
+            if (audioRefs.current[wordId]) {
+                audioRefs.current[wordId].pause();
+                audioRefs.current[wordId].currentTime = 0;
+            }
+            setPlayingId(null);
+            return;
+        }
+
+        // If another word is playing, stop it
         if (playingId !== null && audioRefs.current[playingId]) {
             audioRefs.current[playingId].pause();
             audioRefs.current[playingId].currentTime = 0;
         }
+
+        // Play the new word
         if (!audioRefs.current[wordId]) {
             audioRefs.current[wordId] = new Audio(audioUrl);
             audioRefs.current[wordId].onended = () => setPlayingId(null);
@@ -224,14 +238,12 @@ export default function VocabularyDashboardPage() {
                                                         className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${playingId === word.id ? `${primaryBgClass} text-white shadow-lg ${themeShadow}` : `bg-slate-50 text-slate-400 hover:bg-${isUz ? "blue" : "orange"}-50 hover:${primaryTextClass} group-hover:scale-105 active:scale-95`}`}
                                                     >
                                                         {playingId === word.id ? (
-                                                            <div className="flex gap-0.5 items-end h-3">
-                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-full" style={{ animationDelay: '0s' }}></div>
-                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-2" style={{ animationDelay: '0.1s' }}></div>
-                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-3" style={{ animationDelay: '0.2s' }}></div>
-                                                            </div>
+                                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                                                            </svg>
                                                         ) : (
-                                                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                                                            <svg className="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M3 22v-20l18 10-18 10z" />
                                                             </svg>
                                                         )}
                                                     </button>
