@@ -150,7 +150,7 @@ export default function LessonsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FFF4E6] flex flex-col font-sans selection:bg-blue-200">
+        <div className="min-h-screen bg-[#FFF4E6] flex flex-col font-sans selection:bg-blue-200" suppressHydrationWarning>
             <Header />
 
             <main className="flex-grow">
