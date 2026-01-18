@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function LessonsPage() {
-    const [nationality, setNationality] = useState<string>("uz");
-
-    useEffect(() => {
-        const saved = localStorage.getItem("nationality");
-        if (saved) setNationality(saved);
-    }, []);
+    const router = useRouter();
+    const [nationality, setNationality] = useState<string>(() => {
+        // Initialize from localStorage immediately to prevent flickering
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("nationality") || "uz";
+        }
+        return "uz";
+    });
 
     const isUz = nationality === "uz";
 
@@ -140,9 +143,9 @@ export default function LessonsPage() {
     const handleStart = () => {
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
         if (token) {
-            window.location.href = "/lessons/videos";
+            router.push("/lessons/videos");
         } else {
-            window.location.href = "/login";
+            router.push("/login");
         }
     };
 

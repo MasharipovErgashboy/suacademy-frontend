@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
 export default function VocabularyPage() {
+    const router = useRouter();
     const [nationality, setNationality] = useState<string>(() => {
         // Initialize from localStorage immediately to prevent flickering
         if (typeof window !== "undefined") {
@@ -89,9 +91,9 @@ export default function VocabularyPage() {
     const handleStart = () => {
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
         if (token) {
-            window.location.href = "/vocabulary/topics";
+            router.push("/vocabulary/topics");
         } else {
-            window.location.href = "/login";
+            router.push("/login");
         }
     };
 
