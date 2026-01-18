@@ -7,9 +7,14 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
+import { pdfjs } from 'react-pdf';
 
-// Import configuration (side-effect) to ensure worker is set
-import '../../lib/pdf-config';
+// Configure worker directly here to ensure it applies
+if (typeof window !== "undefined") {
+    // Standard CDN URL for react-pdf v7.7.1 (pdfjs-dist v3.11.174)
+    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+    console.log(`PDF Worker configured for version ${pdfjs.version}`);
+}
 
 // Dynamically import react-pdf components with no SSR
 const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), {
