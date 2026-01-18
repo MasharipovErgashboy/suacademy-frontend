@@ -84,24 +84,61 @@ export const logout = (): void => {
 
 // Fetch with authentication wrapper
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-    const token = getToken();
+    let token = getToken();
     const nationality = typeof window !== "undefined" ? localStorage.getItem("nationality") : "uz";
 
-    const headers = {
-        "Content-Type": "application/json",
-        "Accept-Language": nationality || "uz",
-        ...options.headers,
-    } as Record<string, string>;
+    const getHeaders = (accessToken: string | null) => {
+        const headers = {
+            "Content-Type": "application/json",
+            "Accept-Language": nationality || "uz",
+            ...options.headers,
+        } as Record<string, string>;
 
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-    }
+        if (accessToken) {
+            headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+        return headers;
+    };
 
-    const response = await fetch(url, { ...options, headers });
+    let response = await fetch(url, { ...options, headers: getHeaders(token) });
 
-    // Handle session invalidation (User deleted or token expired)
+    // Handle token expiration/invalid session
     if (response.status === 401 && token) {
-        logout();
+        const refreshToken = getRefreshToken();
+
+        if (refreshToken) {
+            try {
+                // Attempt to refresh the token
+                const refreshResponse = await fetch(`${API_BASE_URL}/refresh/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ refresh: refreshToken }),
+                });
+
+                if (refreshResponse.ok) {
+                    const data = await refreshResponse.json();
+                    saveTokens({
+                        access: data.access,
+                        refresh: data.refresh || refreshToken // Use new refresh token if provided, else keep old one
+                    });
+
+                    // Retry the original request with new token
+                    token = data.access;
+                    response = await fetch(url, { ...options, headers: getHeaders(token) });
+                } else {
+                    // Refresh failed
+                    logout();
+                }
+            } catch (error) {
+                console.error("Token refresh error:", error);
+                logout();
+            }
+        } else {
+            // No refresh token available
+            logout();
+        }
     }
 
     return response;

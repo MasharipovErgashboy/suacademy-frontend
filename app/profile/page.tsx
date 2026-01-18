@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BACKEND_URL, API_BASE_URL, fetchWithAuth, isAuthenticated, User } from "../lib/auth";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 interface Notification {
     id: number;
@@ -22,6 +23,7 @@ export default function ProfilePage() {
     const [newUsername, setNewUsername] = useState("");
     const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
     const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Fetch Profile
@@ -139,7 +141,7 @@ export default function ProfilePage() {
 
 
     return (
-        <div className="min-h-screen bg-[#FFF4E6] pb-20">
+        <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
             <Header />
 
             {/* Background Decorative Blobs */}
@@ -148,7 +150,7 @@ export default function ProfilePage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-400/10 blur-[100px] animate-pulse delay-1000"></div>
             </div>
 
-            <div className="max-w-5xl mx-auto px-4 relative z-10 pt-8">
+            <div className="max-w-5xl mx-auto px-4 relative z-10 pt-8 flex-grow w-full">
 
                 {/* Profile Header Card */}
                 <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl border border-white/60 mb-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group hover:shadow-2xl transition-all duration-500">
@@ -342,16 +344,7 @@ export default function ProfilePage() {
 
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    if (confirm(isUz ? "Chiqishni tasdiqlaysizmi?" : "ログアウトしますか？")) {
-                                                        localStorage.removeItem("access_token");
-                                                        localStorage.removeItem("refresh_token");
-                                                        localStorage.removeItem("user");
-                                                        localStorage.removeItem("user_data");
-                                                        window.dispatchEvent(new Event("user-updated"));
-                                                        router.push("/login");
-                                                    }
-                                                }}
+                                                onClick={() => setShowLogoutModal(true)}
                                                 className="w-full p-5 flex items-center justify-between hover:bg-red-50 transition-colors group text-left"
                                             >
                                                 <div className="flex items-center gap-4">
@@ -472,6 +465,93 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+
+            {/* Logout Confirmation Modal */}
+            {showLogoutModal && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in"
+                    onClick={() => setShowLogoutModal(false)}
+                >
+                    {/* Backdrop */}
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+                    {/* Modal */}
+                    <div
+                        className="relative bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl animate-scale-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Warning Icon */}
+                        <div className="flex justify-center mb-6">
+                            <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center relative">
+                                <div className="absolute inset-0 bg-red-100 rounded-full animate-ping opacity-20"></div>
+                                <svg className="w-10 h-10 text-red-500 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-2xl font-black text-slate-900 text-center mb-3">
+                            {isUz ? "Chiqishni tasdiqlaysizmi?" : "ログアウトしますか？"}
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-slate-500 text-center mb-8 leading-relaxed">
+                            {isUz
+                                ? "Hisobingizdan chiqmoqchimisiz? Qaytadan kirish uchun login va parol kerak bo'ladi."
+                                : "アカウントからログアウトしますか？再度ログインするには、ユーザー名とパスワードが必要です。"}
+                        </p>
+
+                        {/* Buttons */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowLogoutModal(false)}
+                                className="flex-1 px-6 py-3.5 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition-all active:scale-95"
+                            >
+                                {isUz ? "Bekor qilish" : "キャンセル"}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    localStorage.removeItem("access_token");
+                                    localStorage.removeItem("refresh_token");
+                                    localStorage.removeItem("user");
+                                    localStorage.removeItem("user_data");
+                                    window.dispatchEvent(new Event("user-updated"));
+                                    router.push("/");
+                                }}
+                                className="flex-1 px-6 py-3.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 transition-all active:scale-95"
+                            >
+                                {isUz ? "Chiqish" : "ログアウト"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <Footer />
+
+            <style jsx>{`
+                @keyframes fade-in {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes scale-in {
+                    from { 
+                        opacity: 0;
+                        transform: scale(0.95);
+                    }
+                    to { 
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                .animate-fade-in {
+                    animation: fade-in 0.2s ease-out;
+                }
+                .animate-scale-in {
+                    animation: scale-in 0.3s ease-out;
+                }
+            `}</style>
         </div>
     );
 }
