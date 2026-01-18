@@ -287,7 +287,7 @@ export default function EBookPage() {
                                 <div className="relative z-10">
                                     <div className="mb-6 flex items-center justify-center h-24">
                                         <Image
-                                            src="/asaxiy-logo.png"
+                                            src="/asaxiy-logo-v2.png"
                                             alt="Asaxiy Market Logo"
                                             width={80}
                                             height={96}
