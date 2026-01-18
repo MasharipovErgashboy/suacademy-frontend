@@ -292,6 +292,7 @@ export default function EBookPage() {
                                             width={80}
                                             height={96}
                                             className="object-contain transform group-hover:scale-110 transition-transform duration-500"
+                                            style={{ mixBlendMode: 'multiply' }}
                                         />
                                     </div>
                                     <h3 className="text-xl font-black text-slate-900 mb-3 leading-tight text-center">
