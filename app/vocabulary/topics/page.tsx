@@ -225,17 +225,17 @@ export default function VocabularyDashboardPage() {
                                 </div>
 
                                 {/* Word List */}
-                                <div className="flex flex-col flex-grow divide-y divide-slate-50 overflow-y-auto pr-2 custom-scrollbar">
+                                <div className="flex flex-col flex-grow overflow-y-auto pr-2 custom-scrollbar">
                                     {currentWords.length > 0 ? (
                                         currentWords.map((word) => (
                                             <div
                                                 key={word.id}
-                                                className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50/80 transition-all border-b border-transparent hover:border-slate-100 group rounded-2xl mb-1"
+                                                className="flex items-center gap-5 px-6 py-3.5 hover:bg-slate-50/60 transition-all group rounded-2xl mb-1"
                                             >
-                                                <div className="col-span-1 flex justify-center">
+                                                <div className="flex-shrink-0">
                                                     <button
                                                         onClick={() => playAudio(word.id, word.audio)}
-                                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${playingId === word.id ? `${primaryBgClass} text-white shadow-lg ${themeShadow}` : `bg-slate-50 text-slate-400 hover:bg-${isUz ? "blue" : "orange"}-50 hover:${primaryTextClass} group-hover:scale-105 active:scale-95`}`}
+                                                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${playingId === word.id ? `${primaryBgClass} text-white shadow-md ${themeShadow}` : `text-slate-400 hover:text-slate-600 hover:bg-white/80`}`}
                                                     >
                                                         {playingId === word.id ? (
                                                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -244,18 +244,29 @@ export default function VocabularyDashboardPage() {
                                                         ) : (
                                                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                                                 <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.066.925-2.066 2.065v3.868c0 1.14.925 2.065 2.066 2.065H6.44l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.57 12.006c0-1.272-.612-2.404-1.562-3.124-.34-.257-.841-.183-1.091.144-.25.328-.184.821.143 1.071.558.423.91.1.085.91 1.91 0 1.273-.612 2.404-1.562 3.124-.327.25-.393.743-.143 1.071.25.327.751.4.1.091.144.95.72 1.562 1.852 1.562 3.124z" />
-                                                                <path d="M22.5 12.006c0-2.222-.882-4.237-2.323-5.717-.327-.335-.853-.335-1.18 0s-.335.853 0 1.18c1.173 1.206 1.903 2.858 1.903 4.537 0 1.679-.73 3.331-1.903 4.537-.335.327-.335.853 0 1.18s.853.335 1.18 0c1.441-1.48 2.323-3.495 2.323-5.717z" />
                                                             </svg>
                                                         )}
                                                     </button>
                                                 </div>
-                                                <div className="col-span-11 flex flex-col md:flex-row md:items-center gap-2 md:gap-8 pl-4">
-                                                    <div className="font-black text-slate-800 text-lg md:text-xl tracking-tight min-w-[140px]">
-                                                        {word.word}
+
+                                                <div className="flex-grow flex items-center justify-between min-w-0">
+                                                    <div className="flex items-center gap-4 min-w-0">
+                                                        <span className="text-[20px] font-medium text-slate-800 truncate">
+                                                            {word.word.split('[')[0].trim()}
+                                                        </span>
+                                                        <span className="text-slate-300 font-light text-xl">—</span>
+                                                        <span className="text-[18px] font-normal text-slate-500 truncate">
+                                                            {word.translation}
+                                                        </span>
                                                     </div>
-                                                    <div className="w-px h-6 bg-slate-100 hidden md:block"></div>
-                                                    <div className="font-bold text-slate-500 text-base md:text-lg group-hover:text-slate-700 transition-colors leading-relaxed">
-                                                        {word.translation}
+
+                                                    <div className="flex items-center gap-8 flex-shrink-0">
+                                                        <span className="text-[14px] font-medium text-slate-400 min-w-[80px] text-right">
+                                                            {word.word.includes('[') ? word.word.split('[')[1]?.replace(']', '') : ''}
+                                                        </span>
+                                                        <span className="px-4 py-1.5 bg-slate-100/80 text-slate-500 text-[12px] font-bold rounded-full group-hover:bg-slate-200/50 transition-colors">
+                                                            {selectedTopicDetail.topic.title}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
