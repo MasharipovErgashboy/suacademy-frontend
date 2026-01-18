@@ -210,35 +210,40 @@ export default function VocabularyDashboardPage() {
                                     </p>
                                 </div>
 
-                                {/* Table Header */}
-                                <div className="grid grid-cols-12 gap-6 px-8 py-5 bg-slate-50/50 rounded-3xl mb-6 text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] border border-slate-100">
-                                    <div className="col-span-1 border-r border-slate-200/50">Tinglash</div>
-                                    <div className="col-span-5 pl-4 border-r border-slate-200/50">Yaponcha</div>
-                                    <div className="col-span-6 pl-4">O'zbekcha</div>
-                                </div>
-
+                                {/* Word List */}
                                 <div className="flex flex-col flex-grow divide-y divide-slate-50 overflow-y-auto pr-2 custom-scrollbar">
                                     {currentWords.length > 0 ? (
                                         currentWords.map((word) => (
                                             <div
                                                 key={word.id}
-                                                className="grid grid-cols-12 gap-6 px-8 py-5 items-center hover:bg-slate-50/70 transition-all border-b border-slate-50 group rounded-[1.5rem]"
+                                                className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50/80 transition-all border-b border-transparent hover:border-slate-100 group rounded-2xl mb-1"
                                             >
-                                                <div className="col-span-1">
+                                                <div className="col-span-1 flex justify-center">
                                                     <button
                                                         onClick={() => playAudio(word.id, word.audio)}
-                                                        className={`w-11 h-11 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${playingId === word.id ? `${primaryBgClass} text-white border-${primaryColorClass} animate-pulse shadow-lg ${themeShadow}` : `bg-white border-${primaryColorClass}/20 ${primaryTextClass} hover:border-${primaryColorClass} hover:shadow-md hover:bg-${isUz ? "blue" : "orange"}-50/30`}`}
+                                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${playingId === word.id ? `${primaryBgClass} text-white shadow-lg ${themeShadow}` : `bg-slate-50 text-slate-400 hover:bg-${isUz ? "blue" : "orange"}-50 hover:${primaryTextClass} group-hover:scale-105 active:scale-95`}`}
                                                     >
-                                                        <svg className="w-4.5 h-4.5 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                                                        </svg>
+                                                        {playingId === word.id ? (
+                                                            <div className="flex gap-0.5 items-end h-3">
+                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-full" style={{ animationDelay: '0s' }}></div>
+                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-2" style={{ animationDelay: '0.1s' }}></div>
+                                                                <div className="w-1 bg-white animate-[bounce_0.6s_infinite] h-3" style={{ animationDelay: '0.2s' }}></div>
+                                                            </div>
+                                                        ) : (
+                                                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                                                            </svg>
+                                                        )}
                                                     </button>
                                                 </div>
-                                                <div className="col-span-5 pl-4 font-black text-slate-800 text-[17px] tracking-tight">
-                                                    {word.word}
-                                                </div>
-                                                <div className="col-span-6 pl-4 font-bold text-slate-500 text-[16px] group-hover:text-slate-700 transition-colors leading-relaxed">
-                                                    {word.translation}
+                                                <div className="col-span-11 flex flex-col md:flex-row md:items-center gap-2 md:gap-8 pl-4">
+                                                    <div className="font-black text-slate-800 text-lg md:text-xl tracking-tight min-w-[140px]">
+                                                        {word.word}
+                                                    </div>
+                                                    <div className="w-px h-6 bg-slate-100 hidden md:block"></div>
+                                                    <div className="font-bold text-slate-500 text-base md:text-lg group-hover:text-slate-700 transition-colors leading-relaxed">
+                                                        {word.translation}
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))
