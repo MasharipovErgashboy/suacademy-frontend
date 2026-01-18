@@ -24,7 +24,9 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { pdfjs } from 'react-pdf';
 
 if (typeof window !== "undefined") {
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+    const workerSrc = '/pdf.worker.js';
+    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+    console.log("PDF Worker configured at:", workerSrc);
 }
 
 export default function EBookReaderPage() {
