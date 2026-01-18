@@ -147,36 +147,15 @@ export default function EBookPage() {
                             {/* Book Cover */}
                             <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300">
                                 <div className="relative z-10 w-full max-w-md mx-auto">
-                                    {/* Book Cover Card */}
-                                    <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 animate-float">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-orange-500/20"></div>
-                                        <div className="relative z-10 p-8 h-full flex flex-col justify-between">
-                                            <div>
-                                                <div className="text-sm font-bold text-blue-400 mb-2">NEW EDITION</div>
-                                                <h2 className="text-3xl font-black text-white mb-4 leading-tight">
-                                                    Bir Kunda<br />Bir Suhbat
-                                                </h2>
-                                                <div className="text-sm text-slate-300 space-y-1">
-                                                    <div>一日一会話</div>
-                                                    <div>Conversation Book</div>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center">
-                                                        <span className="text-2xl">🗣️</span>
-                                                    </div>
-                                                    <div className="text-white text-sm font-bold">25 Topics</div>
-                                                </div>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center">
-                                                        <span className="text-2xl">📱</span>
-                                                    </div>
-                                                    <div className="text-white text-sm font-bold">QR Audio</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    {/* Book Cover Image */}
+                                    <div className="relative aspect-[3/4] rounded-[2rem] shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 animate-float">
+                                        <Image
+                                            src="/book-cover.png"
+                                            alt="Bir Kunda Bir Suhbat Book Cover"
+                                            fill
+                                            className="object-cover"
+                                            priority
+                                        />
                                     </div>
 
                                     {/* Floating Badge */}
