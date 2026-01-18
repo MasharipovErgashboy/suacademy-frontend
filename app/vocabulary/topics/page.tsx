@@ -196,7 +196,9 @@ export default function VocabularyDashboardPage() {
 
                                     <div className="flex gap-2 mt-8">
                                         <button className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm">Barcha So'zlar</button>
-                                        <button className="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition-all">{selectedTopic.name.split(' ')[0]}</button>
+                                        <button className="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition-all">
+                                            {selectedTopic?.name?.split(' ')[0] || "Mavzu"}
+                                        </button>
                                     </div>
                                 </div>
 
