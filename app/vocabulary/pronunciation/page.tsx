@@ -33,6 +33,8 @@ export default function PronunciationPage() {
     const [playingId, setPlayingId] = useState<number | null>(null);
     const [completedWords, setCompletedWords] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const wordsPerPage = 15;
     const audioRefs = useRef<{ [key: number]: HTMLAudioElement }>({});
 
     const isUz = nationality === "uz";
@@ -81,6 +83,7 @@ export default function PronunciationPage() {
     const handleTopicChange = (slug: string) => {
         setSelectedTopic(slug);
         setCompletedWords(new Set());
+        setCurrentPage(1);
         fetchWords(slug);
     };
 
@@ -105,6 +108,12 @@ export default function PronunciationPage() {
         setPlayingId(wordId);
         audioRefs.current[wordId].play();
     };
+
+    // Pagination calculations
+    const totalPages = Math.ceil(words.length / wordsPerPage);
+    const startIndex = (currentPage - 1) * wordsPerPage;
+    const endIndex = startIndex + wordsPerPage;
+    const currentWords = words.slice(startIndex, endIndex);
 
     const progress = words.length > 0 ? (completedWords.size / words.length) * 100 : 0;
 
@@ -193,14 +202,14 @@ export default function PronunciationPage() {
                             </p>
                         </div>
                     ) : (
-                        words.map((word) => (
+                        currentWords.map((word) => (
                             <div
                                 key={word.id}
                                 className={`bg-white rounded-2xl p-6 shadow-lg border-2 transition-all duration-300 ${completedWords.has(word.id)
-                                    ? "border-green-200 bg-green-50"
-                                    : playingId === word.id
-                                        ? isUz ? "border-blue-500 shadow-blue-200" : "border-orange-500 shadow-orange-200"
-                                        : "border-slate-200 hover:border-slate-300"
+                                        ? "border-green-200 bg-green-50"
+                                        : playingId === word.id
+                                            ? isUz ? "border-blue-500 shadow-blue-200" : "border-orange-500 shadow-orange-200"
+                                            : "border-slate-200 hover:border-slate-300"
                                     }`}
                             >
                                 <div className="flex items-center gap-6">
@@ -209,10 +218,10 @@ export default function PronunciationPage() {
                                         onClick={() => playAudio(word.id, word.audio)}
                                         disabled={!word.audio}
                                         className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center transition-all ${!word.audio
-                                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                            : playingId === word.id
-                                                ? isUz ? "bg-blue-500 text-white shadow-lg shadow-blue-300 scale-110" : "bg-orange-500 text-white shadow-lg shadow-orange-300 scale-110"
-                                                : isUz ? "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105" : "bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105"
+                                                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                                : playingId === word.id
+                                                    ? isUz ? "bg-blue-500 text-white shadow-lg shadow-blue-300 scale-110" : "bg-orange-500 text-white shadow-lg shadow-orange-300 scale-110"
+                                                    : isUz ? "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105" : "bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105"
                                             }`}
                                     >
                                         {playingId === word.id ? (
@@ -249,6 +258,46 @@ export default function PronunciationPage() {
                         ))
                     )}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="mt-8 flex items-center justify-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            className={`px-4 py-2 rounded-xl font-bold transition-all ${currentPage === 1
+                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    : isUz ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-orange-500 text-white hover:bg-orange-600"
+                                }`}
+                        >
+                            ←
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                className={`w-10 h-10 rounded-xl font-bold transition-all ${currentPage === page
+                                        ? isUz ? "bg-blue-500 text-white shadow-lg" : "bg-orange-500 text-white shadow-lg"
+                                        : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
+                                    }`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                            className={`px-4 py-2 rounded-xl font-bold transition-all ${currentPage === totalPages
+                                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                    : isUz ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-orange-500 text-white hover:bg-orange-600"
+                                }`}
+                        >
+                            →
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
