@@ -6,7 +6,7 @@ import { isAuthenticated, fetchWithAuth, BACKEND_URL } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BookInfoCard from "../../components/BookInfoCard";
-import BookDescription from "../../components/BookDescription"; // New Component
+import BookDescription from "../../components/BookDescription";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { pdfjs } from 'react-pdf';
@@ -85,6 +85,9 @@ export default function EBookReaderPage() {
             ) {
                 e.preventDefault();
             }
+            // Add Arrow key navigation
+            if (e.key === 'ArrowRight') changePage(1);
+            if (e.key === 'ArrowLeft') changePage(-1);
         };
         document.addEventListener('keydown', handleKeyDown);
 
@@ -120,7 +123,7 @@ export default function EBookReaderPage() {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('fullscreenchange', handleFullScreenChange);
         };
-    }, [router]);
+    }, [router, pageNumber, numPages]); // Added dependencies for page navigation via keys
 
     // Resize logic needs to be independent to react to full screen changes
     useEffect(() => {
@@ -129,9 +132,8 @@ export default function EBookReaderPage() {
                 // In full screen, fit to height mostly
                 const h = window.innerHeight;
                 const w = window.innerWidth;
-                // Simple logic: if wide screen, fit height. if mobile, fit width.
                 if (w > h) {
-                    setScale(1.2); // Larger scale for fullscreen desktop
+                    setScale(1.2);
                 } else {
                     setScale(window.innerWidth / 600);
                 }
@@ -152,11 +154,18 @@ export default function EBookReaderPage() {
     }
 
     const changePage = (offset: number) => {
-        const newPage = Math.max(1, Math.min(pageNumber + offset, numPages || 1));
-        if (newPage !== pageNumber) {
-            setDirection(offset);
-            setPageNumber(newPage);
-        }
+        setNumPages((currentNumPages) => {
+            if (!currentNumPages) return null;
+            setPageNumber((currentPage) => {
+                const newPage = Math.max(1, Math.min(currentPage + offset, currentNumPages));
+                if (newPage !== currentPage) {
+                    setDirection(offset);
+                    return newPage;
+                }
+                return currentPage;
+            });
+            return currentNumPages;
+        });
     };
 
     const toggleFullScreen = () => {
@@ -171,11 +180,24 @@ export default function EBookReaderPage() {
         }
     };
 
+    // Calculate progress percentage
+    const progress = numPages ? (pageNumber / numPages) * 100 : 0;
+
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col select-none overflow-x-hidden">
-            <Header />
 
-            <main className="flex-grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            {/* Dynamic Background Mesh */}
+            <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
+                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                <div className="absolute -bottom-8 left-20 w-[500px] h-[500px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+            </div>
+
+            <div className="relative z-10">
+                <Header />
+            </div>
+
+            <main className="relative z-10 flex-grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center min-h-[60vh]">
                         <div className="animate-spin w-12 h-12 border-4 rounded-full border-t-transparent border-blue-500 mb-4"></div>
@@ -188,40 +210,61 @@ export default function EBookReaderPage() {
                         <div className="lg:col-span-2 flex flex-col gap-8">
 
                             {/* PDF Reader Container */}
-                            <div
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
                                 ref={readerContainerRef}
                                 className={`relative group ${isFullScreen ? 'bg-slate-900 flex items-center justify-center overflow-auto' : ''}`}
                             >
+                                {/* Reading Progress Bar (Top) */}
+                                {!isFullScreen && (
+                                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-100 rounded-t-3xl overflow-hidden z-20">
+                                        <motion.div
+                                            className="h-full bg-gradient-to-r from-blue-400 to-indigo-500"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${progress}%` }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    </div>
+                                )}
+
                                 {/* Floating Controls */}
                                 <div className={`
-                                    absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 transition-all duration-300 hover:scale-105 hover:bg-white/95
+                                    absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-xl p-2.5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/40 transition-all duration-300 hover:scale-[1.02] hover:bg-white
                                      ${isFullScreen ? 'fixed bottom-10' : ''}
                                 `}>
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
                                         onClick={() => changePage(-1)}
                                         disabled={pageNumber <= 1}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-700 disabled:opacity-30 transition-colors"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                                     >
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                                    </button>
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                                    </motion.button>
 
-                                    <div className="flex flex-col items-center min-w-[70px] px-2">
-                                        <span className="font-bold text-slate-800 leading-none">{pageNumber}</span>
+                                    <div className="flex flex-col items-center min-w-[70px] px-2 select-none">
+                                        <span className="font-extrabold text-slate-800 text-lg leading-none">{pageNumber}</span>
                                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">/ {numPages || '--'}</span>
                                     </div>
 
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
                                         onClick={() => changePage(1)}
                                         disabled={pageNumber >= (numPages || 1)}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-700 disabled:opacity-30 transition-colors"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-700 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                                     >
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                                    </button>
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                                    </motion.button>
 
                                     <div className="w-px h-6 bg-slate-200 mx-1"></div>
 
                                     {/* Full Screen Toggle */}
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
                                         onClick={toggleFullScreen}
                                         className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-700 transition-colors"
                                         title={isFullScreen ? "Kichik ekran" : "To'liq ekran"}
@@ -231,14 +274,14 @@ export default function EBookReaderPage() {
                                         ) : (
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
                                         )}
-                                    </button>
+                                    </motion.button>
                                 </div>
 
                                 {/* Main Viewer Area */}
                                 <div
                                     className={`
-                                        bg-white rounded-3xl shadow-xl overflow-hidden relative flex justify-center items-center select-none min-h-[500px]
-                                        ${isFullScreen ? 'h-full w-full rounded-none shadow-none bg-slate-900' : 'transition-transform duration-300 hover:shadow-2xl'}
+                                        bg-white rounded-3xl shadow-xl overflow-hidden relative flex justify-center items-center select-none min-h-[500px] border border-slate-100
+                                        ${isFullScreen ? 'h-full w-full rounded-none shadow-none bg-slate-900 border-none' : 'transition-transform duration-300 hover:shadow-2xl'}
                                     `}
                                     onContextMenu={(e) => e.preventDefault()}
                                 >
@@ -281,7 +324,7 @@ export default function EBookReaderPage() {
                                     {/* Protection Overlay */}
                                     <div className="absolute inset-0 z-10 bg-transparent mix-blend-multiply pointer-events-none"></div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Book Description Area */}
                             <BookDescription />
@@ -323,6 +366,21 @@ export default function EBookReaderPage() {
                 }
                 @media print {
                     body { display: none; }
+                }
+                @keyframes blob {
+                    0% { transform: translate(0px, 0px) scale(1); }
+                    33% { transform: translate(30px, -50px) scale(1.1); }
+                    66% { transform: translate(-20px, 20px) scale(0.9); }
+                    100% { transform: translate(0px, 0px) scale(1); }
+                }
+                .animate-blob {
+                    animation: blob 7s infinite;
+                }
+                .animation-delay-2000 {
+                    animation-delay: 2s;
+                }
+                .animation-delay-4000 {
+                    animation-delay: 4s;
                 }
             `}</style>
             <Footer />
