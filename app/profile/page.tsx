@@ -141,7 +141,7 @@ export default function ProfilePage() {
 
 
     return (
-        <div className="min-h-screen bg-[#FFF4E6] pb-20">
+        <div className="min-h-screen bg-[#FFF4E6] flex flex-col">
             <Header />
 
             {/* Background Decorative Blobs */}
@@ -150,7 +150,7 @@ export default function ProfilePage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-400/10 blur-[100px] animate-pulse delay-1000"></div>
             </div>
 
-            <div className="max-w-5xl mx-auto px-4 relative z-10 pt-8">
+            <div className="max-w-5xl mx-auto px-4 relative z-10 pt-8 flex-grow w-full">
 
                 {/* Profile Header Card */}
                 <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl border border-white/60 mb-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group hover:shadow-2xl transition-all duration-500">

@@ -5,16 +5,25 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Link from "next/link";
+import ScrollAnimation from "../components/ScrollAnimation";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function VocabularyPage() {
     const router = useRouter();
     const [nationality, setNationality] = useState<string>(() => {
-        // Initialize from localStorage immediately to prevent flickering
         if (typeof window !== "undefined") {
             return localStorage.getItem("nationality") || "uz";
         }
         return "uz";
     });
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % 3);
+        }, 3000);
+        return () => clearInterval(timer);
+    }, []);
 
     const content = {
         uz: {
@@ -48,11 +57,43 @@ export default function VocabularyPage() {
                     "Audio orqali talaffuzni mashq qiling",
                     "Bilimingizni testlar orqali sinab ko'ring"
                 ]
-            }
+            },
+            vocabCards: [
+                {
+                    word: "こんにちは",
+                    pronunciation: "Konnichiwa",
+                    translation: "Salom",
+                    fullTranslation: "Salom / Assalomu alaykum",
+                    topic: "Salomlashish",
+                    icon: "👋",
+                    goal: "15 / 20 so'z",
+                    progress: 75
+                },
+                {
+                    word: "ありがとう",
+                    pronunciation: "Arigatou",
+                    translation: "Rahmat",
+                    fullTranslation: "Rahmat / Tashakkur",
+                    topic: "Minnatdorchilik",
+                    icon: "🙏",
+                    goal: "16 / 20 so'z",
+                    progress: 80
+                },
+                {
+                    word: "さようなら",
+                    pronunciation: "Sayonara",
+                    translation: "Xayr",
+                    fullTranslation: "Xayr / Ko'rishguncha",
+                    topic: "Xayrlashuv",
+                    icon: "👋",
+                    goal: "17 / 20 so'z",
+                    progress: 85
+                }
+            ]
         },
         ja: {
             hero: {
-                title: "言葉を通じて日本の世界を発見しましょう",
+                title: "言葉を通じてウズベキスタンの世界を発見しましょう",
                 subtitle: "SU Academyの語彙セクションでは、日常生活に必要な最も重要な単語や表現を学ぶことができます。",
                 cta: "学習を開始する",
             },
@@ -81,12 +122,45 @@ export default function VocabularyPage() {
                     "音声で発音を練習してください",
                     "テストで知識を試してみてください"
                 ]
-            }
+            },
+            vocabCards: [
+                {
+                    word: "Assalomu alaykum",
+                    pronunciation: "Assalomu alaykum",
+                    translation: "こんにちは",
+                    fullTranslation: "こんにちは",
+                    topic: "挨拶",
+                    icon: "👋",
+                    goal: "15 / 20 単語",
+                    progress: 75
+                },
+                {
+                    word: "Rahmat",
+                    pronunciation: "Rahmat",
+                    translation: "ありがとう",
+                    fullTranslation: "ありがとう",
+                    topic: "感謝",
+                    icon: "🙏",
+                    goal: "16 / 20 単語",
+                    progress: 80
+                },
+                {
+                    word: "Xayr",
+                    pronunciation: "Xayr",
+                    translation: "さようなら",
+                    fullTranslation: "さようなら",
+                    topic: "別れ",
+                    icon: "👋",
+                    goal: "17 / 20 単語",
+                    progress: 85
+                }
+            ]
         }
     };
 
     const isUz = nationality === "uz";
     const t = isUz ? content.uz : content.ja;
+    const currentCard = t.vocabCards[currentSlide];
 
     const handleStart = () => {
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
@@ -106,7 +180,7 @@ export default function VocabularyPage() {
                 <section className="relative pt-20 pb-20 overflow-hidden">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col lg:flex-row items-center gap-16">
-                            <div className="flex-1 text-center lg:text-left animate-in fade-in slide-in-from-left-12 duration-1000">
+                            <ScrollAnimation direction="left" className="flex-1 text-center lg:text-left">
                                 <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-6 tracking-wider uppercase border-2 ${isUz ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-orange-50 text-orange-600 border-orange-100"}`}>
                                     {isUz ? "Yangi imkoniyat" : "新機能"}
                                 </span>
@@ -124,9 +198,9 @@ export default function VocabularyPage() {
                                         {t.hero.cta}
                                     </button>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
 
-                            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300">
+                            <ScrollAnimation direction="right" delay={0.2} className="flex-1 relative">
                                 <div className="relative z-10 w-full aspect-square max-w-xl mx-auto flex items-center justify-center">
                                     {/* Main Word Card */}
                                     <div className="relative z-20 w-[80%] bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 p-8 transform -rotate-2 hover:rotate-0 transition-all duration-500 group cursor-default">
@@ -134,11 +208,35 @@ export default function VocabularyPage() {
                                             <span className={`text-sm font-black uppercase tracking-widest mb-4 ${isUz ? "text-blue-500" : "text-orange-500"}`}>
                                                 {isUz ? "Kun so'zi" : "今日の単語"}
                                             </span>
-                                            <div className="text-6xl md:text-7xl font-black text-slate-900 mb-2">こんにちは</div>
-                                            <div className="text-xl font-bold text-slate-400 mb-6 italic">Konnichiwa</div>
+                                            <div className="h-32 flex flex-col justify-center w-full"> {/* Fixed height container for stability */}
+                                                <AnimatePresence mode="popLayout">
+                                                    <motion.div
+                                                        key={currentSlide}
+                                                        initial={{ opacity: 0, y: 20 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -20 }}
+                                                        transition={{ duration: 0.4 }}
+                                                        className="w-full"
+                                                    >
+                                                        <div className="text-4xl md:text-5xl font-black text-slate-900 mb-2 truncate px-2">{currentCard.word}</div>
+                                                        <div className="text-xl font-bold text-slate-400 mb-6 italic">{currentCard.pronunciation}</div>
+                                                    </motion.div>
+                                                </AnimatePresence>
+                                            </div>
                                             <div className="h-px w-full bg-slate-100 mb-6"></div>
-                                            <div className="text-2xl font-black text-slate-700">
-                                                {isUz ? "Salom / Assalomu alaykum" : "こんにちは / ウズベク語"}
+                                            <div className="h-10 flex items-center justify-center w-full">
+                                                <AnimatePresence mode="popLayout">
+                                                    <motion.div
+                                                        key={`trans-${currentSlide}`}
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }}
+                                                        transition={{ duration: 0.4 }}
+                                                        className="text-2xl font-black text-slate-700"
+                                                    >
+                                                        {currentCard.fullTranslation}
+                                                    </motion.div>
+                                                </AnimatePresence>
                                             </div>
                                         </div>
 
@@ -152,10 +250,30 @@ export default function VocabularyPage() {
 
                                     {/* Category Card (Floating Bottom Left) */}
                                     <div className="absolute -bottom-4 -left-4 z-30 bg-white/80 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-white/50 animate-bounce-slow flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-3xl">🍜</div>
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={`icon-${currentSlide}`}
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-3xl"
+                                            >
+                                                {currentCard.icon}
+                                            </motion.div>
+                                        </AnimatePresence>
                                         <div>
-                                            <div className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Mavzu</div>
-                                            <div className="text-lg font-black text-slate-800">Oziq-ovqat</div>
+                                            <div className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">{isUz ? "Mavzu" : "トピック"}</div>
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={`topic-${currentSlide}`}
+                                                    initial={{ opacity: 0, x: 10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -10 }}
+                                                    className="text-lg font-black text-slate-800"
+                                                >
+                                                    {currentCard.topic}
+                                                </motion.div>
+                                            </AnimatePresence>
                                         </div>
                                     </div>
 
@@ -165,13 +283,13 @@ export default function VocabularyPage() {
                                             <div className="relative w-12 h-12">
                                                 <svg className="w-12 h-12 -rotate-90">
                                                     <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="4" className="text-slate-100" />
-                                                    <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="4" className={isUz ? "text-blue-500" : "text-orange-500"} strokeDasharray="125" strokeDashoffset="30" />
+                                                    <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="4" className={isUz ? "text-blue-500" : "text-orange-500"} strokeDasharray="125" strokeDashoffset={125 - (125 * currentCard.progress) / 100} style={{ transition: "stroke-dashoffset 0.5s ease-out" }} />
                                                 </svg>
-                                                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-slate-700">75%</div>
+                                                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-slate-700">{currentCard.progress}%</div>
                                             </div>
                                             <div>
-                                                <div className="text-xs font-black text-slate-400 uppercase tracking-tighter">Kunlik Maqsad</div>
-                                                <div className="text-sm font-black text-slate-800">15 / 20 so'z</div>
+                                                <div className="text-xs font-black text-slate-400 uppercase tracking-tighter">{isUz ? "Kunlik Maqsad" : "一日の目標"}</div>
+                                                <div className="text-sm font-black text-slate-800">{currentCard.goal}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +302,7 @@ export default function VocabularyPage() {
                                     {/* Background glow */}
                                     <div className={`absolute inset-0 blur-[100px] opacity-20 -z-10 rounded-full ${isUz ? "bg-blue-400" : "bg-orange-400"}`}></div>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
                         </div>
                     </div>
                 </section>
@@ -194,10 +312,10 @@ export default function VocabularyPage() {
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {t.features.map((feature, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8"
-                                    style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.2}
+                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
                                 >
                                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm ${isUz ? "bg-blue-50" : "bg-orange-50"}`}>
                                         {feature.icon}
@@ -206,7 +324,7 @@ export default function VocabularyPage() {
                                     <p className="text-slate-600 leading-relaxed font-medium">
                                         {feature.desc}
                                     </p>
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -221,10 +339,10 @@ export default function VocabularyPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {t.process.steps.map((step, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="relative animate-in fade-in zoom-in"
-                                    style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.15}
+                                    className="relative"
                                 >
                                     <div className="bg-white rounded-[2rem] p-8 h-full border border-slate-100 shadow-xl relative z-10 group hover:bg-slate-900 transition-all duration-500 cursor-default">
                                         <div className={`text-6xl font-black mb-6 opacity-20 ${isUz ? "text-blue-600" : "text-orange-600"} group-hover:text-white group-hover:opacity-10 group-hover:scale-110 transition-all duration-500`}>
@@ -237,7 +355,7 @@ export default function VocabularyPage() {
                                     {idx < 3 && (
                                         <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-slate-200 z-0 group-hover:bg-slate-400 transition-colors duration-300"></div>
                                     )}
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -246,7 +364,7 @@ export default function VocabularyPage() {
                 {/* CTA Final */}
                 <section className="pb-32">
                     <div className="container mx-auto px-4">
-                        <div className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-[#FE9B19] shadow-orange-500/20"}`}>
+                        <ScrollAnimation className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-[#FE9B19] shadow-orange-500/20"}`}>
                             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                                 <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
                                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
@@ -261,7 +379,7 @@ export default function VocabularyPage() {
                             >
                                 {isUz ? "Hozir boshlang" : "今すぐ始める"}
                             </button>
-                        </div>
+                        </ScrollAnimation>
                     </div>
                 </section>
             </main>

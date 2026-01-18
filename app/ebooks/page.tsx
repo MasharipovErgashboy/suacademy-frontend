@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Image from "next/image";
 import { isAuthenticated } from "../lib/auth";
+import ScrollAnimation from "../components/ScrollAnimation";
 
 export default function EBookPage() {
     const router = useRouter();
@@ -76,7 +77,7 @@ export default function EBookPage() {
         },
         ja: {
             hero: {
-                title: "Bir Kunda Bir Suhbat",
+                title: "一日一会話",
                 subtitle: "ウズベク語会話をゼロから学ぶ",
                 description: "25の日常生活トピックでウズベク語を自由に話せるようになる",
                 cta: "本を読み始める"
@@ -135,7 +136,7 @@ export default function EBookPage() {
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col lg:flex-row items-center gap-16">
                             {/* Text Content */}
-                            <div className="flex-1 text-center lg:text-left animate-in fade-in slide-in-from-left-12 duration-1000">
+                            <ScrollAnimation direction="left" className="flex-1 text-center lg:text-left">
                                 <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-[1.1]">
                                     {t.hero.title}
                                 </h1>
@@ -151,10 +152,10 @@ export default function EBookPage() {
                                 >
                                     {t.hero.cta}
                                 </button>
-                            </div>
+                            </ScrollAnimation>
 
                             {/* Book Cover */}
-                            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300">
+                            <ScrollAnimation direction="right" delay={0.2} className="flex-1 relative">
                                 <div className="relative z-10 w-full max-w-md mx-auto">
                                     {/* Book Cover Image */}
                                     <div className="relative aspect-[3/4] rounded-[2rem] shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 animate-float">
@@ -175,7 +176,7 @@ export default function EBookPage() {
 
                                 {/* Decorative Elements */}
                                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] opacity-20 -z-10 rounded-full ${isUz ? "bg-blue-400" : "bg-orange-400"}`}></div>
-                            </div>
+                            </ScrollAnimation>
                         </div>
                     </div>
                 </section>
@@ -193,17 +194,17 @@ export default function EBookPage() {
                                 { icon: "🎧", title: t.overview.audio, desc: t.overview.audioDesc, color: "orange" },
                                 { icon: "✨", title: t.overview.fromZero, desc: t.overview.fromZeroDesc, color: "purple" }
                             ].map((feature, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8"
-                                    style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.15}
+                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
                                 >
                                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm group-hover:shadow-lg bg-${feature.color}-50`}>
                                         {feature.icon}
                                     </div>
                                     <h3 className="text-2xl font-black text-slate-900 mb-3">{feature.title}</h3>
                                     <p className="text-slate-600 leading-relaxed font-medium">{feature.desc}</p>
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -228,7 +229,7 @@ export default function EBookPage() {
                                     { step: "2", text: t.qrSection.step2, icon: "🤖" },
                                     { step: "3", text: t.qrSection.step3, icon: "🎧" }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="relative animate-in fade-in zoom-in" style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}>
+                                    <ScrollAnimation key={idx} delay={idx * 0.2} className="relative">
                                         <div className="bg-white rounded-[2rem] p-8 h-full border border-slate-100 shadow-xl relative z-10 group hover:bg-green-50 transition-all duration-500">
                                             <div className="text-6xl font-black mb-6 opacity-20 text-green-600 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500">
                                                 {item.step}
@@ -241,7 +242,7 @@ export default function EBookPage() {
                                         {idx < 2 && (
                                             <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-slate-200 z-0"></div>
                                         )}
-                                    </div>
+                                    </ScrollAnimation>
                                 ))}
                             </div>
 
@@ -265,9 +266,8 @@ export default function EBookPage() {
                         </h2>
                         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                             {/* National Library */}
-                            <div
-                                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-[2.5rem] border-2 border-blue-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
-                                style={{ animationDelay: '0ms', animationFillMode: 'both' }}
+                            <ScrollAnimation
+                                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-[2.5rem] border-2 border-blue-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
                                 <div className="relative z-10">
@@ -285,12 +285,12 @@ export default function EBookPage() {
                                     </h3>
                                     <p className="text-slate-700 font-bold text-center">{t.partners.library.desc}</p>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
 
                             {/* Asaxiy Market */}
-                            <div
-                                className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-[2.5rem] border-2 border-orange-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
-                                style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+                            <ScrollAnimation
+                                delay={0.2}
+                                className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-[2.5rem] border-2 border-orange-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-orange-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
                                 <div className="relative z-10">
@@ -309,12 +309,12 @@ export default function EBookPage() {
                                     </h3>
                                     <p className="text-slate-700 font-bold text-center">{t.partners.asaxiy.desc}</p>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
 
                             {/* Sarmoya Books */}
-                            <div
-                                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-[2.5rem] border-2 border-green-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8 group relative overflow-hidden"
-                                style={{ animationDelay: '400ms', animationFillMode: 'both' }}
+                            <ScrollAnimation
+                                delay={0.4}
+                                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-[2.5rem] border-2 border-green-200 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
                                 <div className="relative z-10">
@@ -333,7 +333,7 @@ export default function EBookPage() {
                                     </h3>
                                     <p className="text-slate-700 font-bold text-center">{t.partners.sarmoya.desc}</p>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
                         </div>
                     </div>
                 </section>
@@ -341,7 +341,7 @@ export default function EBookPage() {
                 {/* Final CTA */}
                 <section className="py-32">
                     <div className="container mx-auto px-4">
-                        <div className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-orange-500 shadow-orange-500/20"}`}>
+                        <ScrollAnimation className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-orange-500 shadow-orange-500/20"}`}>
                             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                                 <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
                                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
@@ -359,7 +359,7 @@ export default function EBookPage() {
                             >
                                 {t.finalCta.button}
                             </button>
-                        </div>
+                        </ScrollAnimation>
                     </div>
                 </section>
             </main>

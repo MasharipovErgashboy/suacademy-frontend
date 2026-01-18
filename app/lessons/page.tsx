@@ -6,16 +6,29 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ScrollAnimation from "../components/ScrollAnimation";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function LessonsPage() {
     const router = useRouter();
-    const [nationality, setNationality] = useState<string>(() => {
-        // Initialize from localStorage immediately to prevent flickering
-        if (typeof window !== "undefined") {
-            return localStorage.getItem("nationality") || "uz";
+    const [nationality, setNationality] = useState<string>("uz");
+    const [mounted, setMounted] = useState(false);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % 3);
+        }, 3000);
+        return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        setMounted(true);
+        const saved = localStorage.getItem("nationality");
+        if (saved) {
+            setNationality(saved);
         }
-        return "uz";
-    });
+    }, []);
 
     const isUz = nationality === "uz";
 
@@ -76,7 +89,36 @@ export default function LessonsPage() {
                     },
                 ],
             },
-            finalCta: "Yapon tilini bugunoq boshlang!"
+            finalCta: "Yapon tilini bugunoq boshlang!",
+            videoCards: [
+                {
+                    lesson: "Dars 05",
+                    title: "Xarid qilish: Bozorda",
+                    nextLesson: "Keyingi dars",
+                    nextTopic: "Grammatika: -masu",
+                    lastResult: "Oxirgi natija",
+                    grade: "A'lo!",
+                    image: "/lessons-cover.png"
+                },
+                {
+                    lesson: "Dars 12",
+                    title: "Transport: Metroda",
+                    nextLesson: "Keyingi dars",
+                    nextTopic: "Grammatika: -te form",
+                    lastResult: "Oxirgi natija",
+                    grade: "Yaxshi!",
+                    image: "/lessons-metro-japan.png"
+                },
+                {
+                    lesson: "Dars 20",
+                    title: "Restoranda buyurtma",
+                    nextLesson: "Keyingi dars",
+                    nextTopic: "Grammatika: -tai form",
+                    lastResult: "Oxirgi natija",
+                    grade: "Zo'r!",
+                    image: "/lessons-restaurant-japan.png"
+                }
+            ]
         },
         ja: {
             badge: "25のビデオレッスン",
@@ -134,11 +176,41 @@ export default function LessonsPage() {
                     },
                 ],
             },
-            finalCta: "今日からウズベク語を始めましょう！"
+            finalCta: "今日からウズベク語を始めましょう！",
+            videoCards: [
+                {
+                    lesson: "レッスン 05",
+                    title: "買い物：市場で",
+                    nextLesson: "次のレッスン",
+                    nextTopic: "文法：-yapman",
+                    lastResult: "最新のスコア",
+                    grade: "素晴らしい！",
+                    image: "/lessons-uzbek-market.png"
+                },
+                {
+                    lesson: "レッスン 12",
+                    title: "交通：地下鉄で",
+                    nextLesson: "次のレッスン",
+                    nextTopic: "文法：-gan",
+                    lastResult: "最新のスコア",
+                    grade: "良い！",
+                    image: "/lessons-metro-uzbek.png"
+                },
+                {
+                    lesson: "レッスン 20",
+                    title: "レストランで注文",
+                    nextLesson: "次のレッスン",
+                    nextTopic: "文法：-sa",
+                    lastResult: "最新のスコア",
+                    grade: "完璧！",
+                    image: "/lessons-restaurant-uzbek.png"
+                }
+            ]
         },
     };
 
     const t = content[nationality as keyof typeof content];
+    const currentCard = t.videoCards[currentSlide];
 
     const handleStart = () => {
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
@@ -149,6 +221,10 @@ export default function LessonsPage() {
         }
     };
 
+    if (!mounted) {
+        return <div className="min-h-screen bg-[#FFF4E6]" />;
+    }
+
     return (
         <div className="min-h-screen bg-[#FFF4E6] flex flex-col font-sans selection:bg-blue-200" suppressHydrationWarning>
             <Header />
@@ -158,7 +234,7 @@ export default function LessonsPage() {
                 <section className="relative pt-20 pb-20 overflow-hidden">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col lg:flex-row items-center gap-16">
-                            <div className="flex-1 text-center lg:text-left animate-in fade-in slide-in-from-left-12 duration-1000">
+                            <ScrollAnimation direction="left" className="flex-1 text-center lg:text-left">
                                 <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-6 tracking-wider uppercase border-2 ${isUz ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-orange-50 text-orange-600 border-orange-100"}`}>
                                     {t.badge}
                                 </span>
@@ -182,18 +258,29 @@ export default function LessonsPage() {
                                         {t.hero.secondary}
                                     </button>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
 
-                            <div className="flex-1 relative animate-in fade-in zoom-in duration-1000 delay-300">
+                            <ScrollAnimation direction="right" delay={0.2} className="flex-1 relative">
                                 <div className="relative z-10 w-full aspect-video max-w-xl mx-auto flex items-center justify-center">
                                     {/* Main Lesson Video Card */}
                                     <div className="relative z-20 w-[90%] aspect-video bg-slate-900 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden border border-slate-800 group cursor-pointer transform -rotate-1 hover:rotate-0 transition-all duration-700">
-                                        <Image
-                                            src="/lessons-cover.png"
-                                            alt="Lesson Cover"
-                                            fill
-                                            className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
-                                        />
+                                        <AnimatePresence>
+                                            <motion.div
+                                                key={currentCard.image}
+                                                initial={{ opacity: 0, scale: 1.2 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0 }}
+                                                transition={{ duration: 1.5, ease: "easeOut" }}
+                                                className="absolute inset-0"
+                                            >
+                                                <Image
+                                                    src={currentCard.image}
+                                                    alt={currentCard.title}
+                                                    fill
+                                                    className="object-cover opacity-60"
+                                                />
+                                            </motion.div>
+                                        </AnimatePresence>
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
 
                                         {/* Play Overlay */}
@@ -208,10 +295,18 @@ export default function LessonsPage() {
                                         {/* Lesson Info Overlay */}
                                         <div className="absolute bottom-6 left-8 right-8 z-20">
                                             <div className="flex items-end justify-between gap-4">
-                                                <div>
-                                                    <div className="text-blue-400 text-xs font-black uppercase tracking-widest mb-1">Dars 05</div>
-                                                    <div className="text-white text-xl font-black">Xarid qilish: Bozorda</div>
-                                                </div>
+                                                <AnimatePresence mode="wait">
+                                                    <motion.div
+                                                        key={`${currentSlide}-info`}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: -10 }}
+                                                        transition={{ duration: 0.3 }}
+                                                    >
+                                                        <div className="text-blue-400 text-xs font-black uppercase tracking-widest mb-1">{currentCard.lesson}</div>
+                                                        <div className="text-white text-xl font-black">{currentCard.title}</div>
+                                                    </motion.div>
+                                                </AnimatePresence>
                                                 <div className="text-white/60 text-sm font-bold">12:45</div>
                                             </div>
                                             <div className="mt-4 h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
@@ -223,10 +318,18 @@ export default function LessonsPage() {
                                     {/* Next Lesson Floating Badge */}
                                     <div className="absolute -top-6 -left-6 z-30 bg-white rounded-3xl p-4 shadow-2xl border border-slate-100 flex items-center gap-4 animate-bounce-slow">
                                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${isUz ? "bg-blue-50" : "bg-orange-50"}`}>📖</div>
-                                        <div>
-                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Keyingi dars</div>
-                                            <div className="text-sm font-black text-slate-800">Grammatika: -masu</div>
-                                        </div>
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={`${currentSlide}-next`}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 10 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{currentCard.nextLesson}</div>
+                                                <div className="text-sm font-black text-slate-800">{currentCard.nextTopic}</div>
+                                            </motion.div>
+                                        </AnimatePresence>
                                     </div>
 
                                     {/* Quiz Score Floating Badge */}
@@ -239,10 +342,18 @@ export default function LessonsPage() {
                                                 </svg>
                                                 <div className="absolute inset-0 flex items-center justify-center text-xs font-black text-slate-800">90%</div>
                                             </div>
-                                            <div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Oxirgi natija</div>
-                                                <div className="text-sm font-black text-slate-800">A'lo! 🌟</div>
-                                            </div>
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={`${currentSlide}-score`}
+                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.9 }}
+                                                    transition={{ duration: 0.3 }}
+                                                >
+                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{currentCard.lastResult}</div>
+                                                    <div className="text-sm font-black text-slate-800">{currentCard.grade} 🌟</div>
+                                                </motion.div>
+                                            </AnimatePresence>
                                         </div>
                                     </div>
 
@@ -250,7 +361,7 @@ export default function LessonsPage() {
                                     <div className="absolute -z-10 bg-white/40 inset-0 rounded-[3rem] blur-xl animate-pulse"></div>
                                     <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] opacity-20 -z-20 rounded-full ${isUz ? "bg-blue-400" : "bg-orange-400"}`}></div>
                                 </div>
-                            </div>
+                            </ScrollAnimation>
                         </div>
                     </div>
                 </section>
@@ -260,10 +371,10 @@ export default function LessonsPage() {
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
                             {t.stats.map((stat, idx) => (
-                                <div key={idx} className="bg-white/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/50 text-center animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
+                                <ScrollAnimation key={idx} delay={idx * 0.1} className="bg-white/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/50 text-center">
                                     <div className={`text-3xl md:text-5xl font-black mb-1 ${isUz ? "text-blue-600" : "text-orange-600"}`}>{stat.number}</div>
                                     <div className="text-sm font-bold text-slate-500 uppercase tracking-tighter">{stat.label}</div>
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -274,10 +385,10 @@ export default function LessonsPage() {
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {t.features.map((feature, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-8"
-                                    style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.2}
+                                    className="group p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
                                 >
                                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm group-hover:shadow-lg ${isUz ? "bg-blue-50" : "bg-orange-50"}`}>
                                         {feature.icon}
@@ -286,7 +397,7 @@ export default function LessonsPage() {
                                     <p className="text-slate-600 leading-relaxed font-medium">
                                         {feature.desc}
                                     </p>
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -301,10 +412,10 @@ export default function LessonsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {t.process.steps.map((step, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="relative animate-in fade-in zoom-in"
-                                    style={{ animationDelay: `${idx * 200}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.15}
+                                    className="relative"
                                 >
                                     <div className="bg-white rounded-[2rem] p-8 h-full border border-slate-100 shadow-xl relative z-10 group hover:bg-slate-900 transition-all duration-500 cursor-default">
                                         <div className={`text-6xl font-black mb-6 opacity-20 ${isUz ? "text-blue-600" : "text-orange-600"} group-hover:text-white group-hover:opacity-10 group-hover:scale-110 transition-all duration-500`}>
@@ -317,7 +428,7 @@ export default function LessonsPage() {
                                     {idx < 3 && (
                                         <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-slate-200 z-0 group-hover:bg-slate-400 transition-colors"></div>
                                     )}
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -331,10 +442,10 @@ export default function LessonsPage() {
                         </h2>
                         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                             {t.testimonials.items.map((item, idx) => (
-                                <div
+                                <ScrollAnimation
                                     key={idx}
-                                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500 animate-in fade-in slide-in-from-right-8"
-                                    style={{ animationDelay: `${idx * 300}ms`, animationFillMode: 'both' }}
+                                    delay={idx * 0.2}
+                                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500"
                                 >
                                     <div className="flex gap-1 mb-6">
                                         {[...Array(item.rating)].map((_, i) => (
@@ -353,7 +464,7 @@ export default function LessonsPage() {
                                             <div className="text-slate-500 font-bold">{item.role}</div>
                                         </div>
                                     </div>
-                                </div>
+                                </ScrollAnimation>
                             ))}
                         </div>
                     </div>
@@ -362,7 +473,7 @@ export default function LessonsPage() {
                 {/* Final CTA */}
                 <section className="py-32">
                     <div className="container mx-auto px-4">
-                        <div className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-[#FE9B19] shadow-orange-500/20"}`}>
+                        <ScrollAnimation className={`rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl ${isUz ? "bg-blue-600 shadow-blue-500/20" : "bg-[#FE9B19] shadow-orange-500/20"}`}>
                             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                                 <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
                                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
@@ -377,7 +488,7 @@ export default function LessonsPage() {
                             >
                                 {isUz ? "Hozir boshlang" : "今すぐ始める"}
                             </button>
-                        </div>
+                        </ScrollAnimation>
                     </div>
                 </section>
             </main>

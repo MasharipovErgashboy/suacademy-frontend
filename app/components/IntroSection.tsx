@@ -109,6 +109,7 @@ export default function IntroSection() {
                     ))}
                 </div>
                 <button
+                    onClick={() => window.location.href = "/lessons"}
                     className={`px-8 py-3 rounded-xl font-bold text-white shadow-lg transition-transform hover:scale-105 active:scale-95 ${isUz ? "bg-blue-600 shadow-blue-200" : "bg-[#FE9B19] shadow-orange-200"}`}
                 >
                     {isUz ? "Batafsil ma'lumot" : "詳細情報"}

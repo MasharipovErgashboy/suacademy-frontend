@@ -1,25 +1,76 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchWithAuth, BACKEND_URL } from '../lib/auth';
 
 interface FeedbackModalProps {
     isOpen: boolean;
     onClose: () => void;
+    nationality: string;
 }
 
-const sectionOptions = [
-    { id: 'video_lessons', label: 'Video darslar', icon: '▶️' },
-    { id: 'ebook', label: 'E-Kitob', icon: '🎧' },
-    { id: 'vocabulary', label: "Lug'at", icon: '🤖' },
-    { id: 'ai_chat', label: 'AI bilan suhbat', icon: '📘' },
-    { id: 'all', label: 'Barchasi Foydali', icon: '' }
-];
+const translations = {
+    uz: {
+        step1: "Platforma haqida umumiy bahoyingiz",
+        step2: "Ushbu platforma sizga qanday foyda berdi?",
+        step2_placeholder: "Fikringizni yozing...",
+        step3: "Qaysi bo'lim sizga eng foydali bo'ldi?",
+        step4: "Yana nimalarni qo'shishimizni xohlaysiz?",
+        step4_placeholder: "Takliflaringiz...",
+        submit: "Jo'natish",
+        sending: "Yuborilmoqda...",
+        success_title: "Rahmat!",
+        success_msg: "Sizning fikringiz biz uchun juda muhim.",
+        sections: {
+            video_lessons: 'Video darslar',
+            ebook: 'E-Kitob',
+            vocabulary: "Lug'at",
+            ai_chat: 'AI bilan suhbat',
+            all: 'Barchasi Foydali'
+        }
+    },
+    ja: {
+        step1: "プラットフォームの全体的な評価",
+        step2: "このプラットフォームはどのように役立ちましたか？",
+        step2_placeholder: "ご意見をお書きください...",
+        step3: "どのセクションが最も役に立ちましたか？",
+        step4: "他に追加してほしい機能はありますか？",
+        step4_placeholder: "ご提案...",
+        submit: "送信",
+        sending: "送信中...",
+        success_title: "ありがとうございます！",
+        success_msg: "あなたのご意見は私たちにとって非常に重要です。",
+        sections: {
+            video_lessons: 'ビデオレッスン',
+            ebook: '電子書籍',
+            vocabulary: "語彙 (辞書)",
+            ai_chat: 'AIチャット',
+            all: 'すべて役に立った'
+        }
+    }
+};
 
-export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+export default function FeedbackModal({ isOpen, onClose, nationality }: FeedbackModalProps) {
     const [step, setStep] = useState('form'); // 'form' | 'success'
     const [loading, setLoading] = useState(false);
+
+    const isUz = nationality === "uz";
+    const t = isUz ? translations.uz : translations.ja;
+    const themeColor = isUz ? "blue" : "orange";
+    const themeColorHex = isUz ? "bg-blue-500" : "bg-orange-500";
+    const themeText = isUz ? "text-blue-500" : "text-orange-500";
+    const themeBorder = isUz ? "border-blue-500" : "border-orange-500"; // For checked state
+    const themeHoverBorder = isUz ? "group-hover:border-blue-400" : "group-hover:border-orange-400";
+
+    const sectionOptions = [
+        { id: 'video_lessons', label: t.sections.video_lessons, icon: '▶️' },
+        { id: 'ebook', label: t.sections.ebook, icon: '🎧' },
+        { id: 'vocabulary', label: t.sections.vocabulary, icon: '🤖' },
+        { id: 'ai_chat', label: t.sections.ai_chat, icon: '📘' },
+        { id: 'all', label: t.sections.all, icon: '' }
+    ];
 
     // Form State
     const [rating, setRating] = useState(0);
@@ -89,7 +140,18 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         }
     };
 
-    return (
+    // Portal logic
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    if (!mounted) return null;
+
+    // Use portal to break out of parent stacking contexts
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -99,7 +161,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"
+                        className="fixed inset-0 bg-black/50 z-[9999] backdrop-blur-sm"
                     />
 
                     {/* Modal Container */}
@@ -107,7 +169,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed inset-0 z-[101] flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[10000] flex items-center justify-center p-4"
                         onClick={(e) => e.stopPropagation()} // Prevent clicking backdrop
                     >
                         <div className="bg-[#F8FCFB] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative min-h-[500px] flex flex-col justify-center">
@@ -129,8 +191,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         {/* Step 1: Rating */}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">1</div>
-                                                <h3 className="font-semibold text-slate-800 text-lg">Platforma haqida umumiy bahoyingiz</h3>
+                                                <div className={`w-8 h-8 rounded-full ${themeColorHex} text-white flex items-center justify-center font-bold text-lg shadow-md`}>1</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">{t.step1}</h3>
                                             </div>
                                             <div className="flex gap-2 pl-11">
                                                 {[1, 2, 3, 4, 5].map((star) => (
@@ -150,16 +212,16 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         {/* Step 2: Benefits */}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">2</div>
-                                                <h3 className="font-semibold text-slate-800 text-lg">Ushbu platforma sizga qanday foyda berdi?</h3>
+                                                <div className={`w-8 h-8 rounded-full ${themeColorHex} text-white flex items-center justify-center font-bold text-lg shadow-md`}>2</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">{t.step2}</h3>
                                             </div>
                                             <div className="pl-11">
                                                 <input
                                                     type="text"
                                                     value={benefits}
                                                     onChange={(e) => setBenefits(e.target.value)}
-                                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
-                                                    placeholder="Fikringizni yozing..."
+                                                    className={`w-full h-12 px-4 rounded-xl border border-slate-200 focus:${themeBorder} focus:ring-2 focus:ring-${themeColor}-500/20 outline-none transition-all bg-white`}
+                                                    placeholder={t.step2_placeholder}
                                                 />
                                             </div>
                                         </div>
@@ -167,13 +229,13 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         {/* Step 3: Useful Sections */}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">3</div>
-                                                <h3 className="font-semibold text-slate-800 text-lg">Qaysi bo'lim sizga eng foydali bo'ldi?</h3>
+                                                <div className={`w-8 h-8 rounded-full ${themeColorHex} text-white flex items-center justify-center font-bold text-lg shadow-md`}>3</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">{t.step3}</h3>
                                             </div>
                                             <div className="pl-11 space-y-2">
                                                 {sectionOptions.map((option) => (
                                                     <label key={option.id} className="flex items-center gap-3 cursor-pointer group select-none">
-                                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${usefulSections.includes(option.id) ? 'bg-blue-500 border-blue-500' : 'border-slate-300 bg-white group-hover:border-blue-400'}`}>
+                                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${usefulSections.includes(option.id) ? `${themeColorHex} ${themeBorder}` : `border-slate-300 bg-white ${themeHoverBorder}`}`}>
                                                             {usefulSections.includes(option.id) && (
                                                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                                             )}
@@ -192,16 +254,16 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         {/* Step 4: Suggestions */}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">4</div>
-                                                <h3 className="font-semibold text-slate-800 text-lg">Yana nimalarni qo'shishimizni xohlaysiz?</h3>
+                                                <div className={`w-8 h-8 rounded-full ${themeColorHex} text-white flex items-center justify-center font-bold text-lg shadow-md`}>4</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">{t.step4}</h3>
                                             </div>
                                             <div className="pl-11">
                                                 <input
                                                     type="text"
                                                     value={suggestions}
                                                     onChange={(e) => setSuggestions(e.target.value)}
-                                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
-                                                    placeholder="Takliflaringiz..."
+                                                    className={`w-full h-12 px-4 rounded-xl border border-slate-200 focus:${themeBorder} focus:ring-2 focus:ring-${themeColor}-500/20 outline-none transition-all bg-white`}
+                                                    placeholder={t.step4_placeholder}
                                                 />
                                             </div>
                                         </div>
@@ -209,9 +271,9 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         <button
                                             onClick={handleSubmit}
                                             disabled={loading || rating === 0}
-                                            className="w-full py-4 bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                                            className={`w-full py-4 ${isUz ? "bg-blue-500 hover:bg-blue-600 shadow-blue-500/30" : "bg-orange-500 hover:bg-orange-600 shadow-orange-500/30"} active:scale-[0.98] text-white font-bold rounded-2xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4`}
                                         >
-                                            {loading ? 'Yuborilmoqda...' : "Jo'natish"}
+                                            {loading ? t.sending : t.submit}
                                         </button>
 
                                     </motion.div>
@@ -232,8 +294,8 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                                         >
                                             <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                         </motion.div>
-                                        <h2 className="text-3xl font-extrabold text-slate-800 mb-2">Rahmat!</h2>
-                                        <p className="text-slate-500 text-lg font-medium">Sizning fikringiz biz uchun juda muhim.</p>
+                                        <h2 className="text-3xl font-extrabold text-slate-800 mb-2">{t.success_title}</h2>
+                                        <p className="text-slate-500 text-lg font-medium">{t.success_msg}</p>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -241,6 +303,7 @@ export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
