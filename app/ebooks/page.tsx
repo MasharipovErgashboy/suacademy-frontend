@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Image from "next/image";
+import { isAuthenticated } from "../lib/auth";
 
 export default function EBookPage() {
     const router = useRouter();
@@ -16,6 +17,14 @@ export default function EBookPage() {
     });
 
     const isUz = nationality === "uz";
+
+    const handleStartReading = () => {
+        if (!isAuthenticated()) {
+            router.push("/login");
+            return;
+        }
+        router.push("/ebooks/reader");
+    };
 
     const content = {
         uz: {
@@ -137,7 +146,7 @@ export default function EBookPage() {
                                     {t.hero.description}
                                 </p>
                                 <button
-                                    onClick={() => {/* Will add reader page later */ }}
+                                    onClick={handleStartReading}
                                     className={`px-12 py-6 rounded-full font-black text-white text-xl shadow-2xl transition-all hover:scale-110 active:scale-95 duration-300 ${isUz ? "bg-blue-600 shadow-blue-500/40 hover:bg-blue-700" : "bg-orange-500 shadow-orange-500/40 hover:bg-orange-600"}`}
                                 >
                                     {t.hero.cta}
