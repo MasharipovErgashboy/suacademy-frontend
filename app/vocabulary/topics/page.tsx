@@ -57,9 +57,16 @@ export default function VocabularyDashboardPage() {
         setLoadingTopics(true);
         setError("");
         try {
+            const user = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+            console.log("🔍 DEBUG: Current user from localStorage:", user ? JSON.parse(user) : null);
+            console.log("🔍 DEBUG: Current nationality from localStorage:", nationality);
+
             const topicsRes = await fetchWithAuth(`${BACKEND_URL}/vocabulary/topics/`);
+            console.log("🔍 DEBUG: Topics API response status:", topicsRes.status);
+
             if (!topicsRes.ok) throw new Error("Mavzularni yuklashda xatolik");
             const topicsData = await topicsRes.json();
+            console.log("🔍 DEBUG: Topics received from API:", topicsData);
             setTopics(topicsData);
 
             if (topicsData.length > 0) {
@@ -168,7 +175,7 @@ export default function VocabularyDashboardPage() {
                                             {topic.title}
                                         </div>
                                         <div className={`text-[9px] font-black tracking-widest mt-0.5 ${selectedTopicDetail?.topic?.slug === topic.slug ? "text-white/40" : "text-slate-400"}`}>
-                                            {topic.words_count} SO'Z
+                                            {topic.words_count} {isUz ? "SO'Z" : "単語"}
                                         </div>
                                     </div>
                                 </button>
@@ -183,11 +190,11 @@ export default function VocabularyDashboardPage() {
                         <div className="flex flex-col gap-3">
                             <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "blue" : "orange"}-100 hover:bg-${isUz ? "blue" : "orange"}-50/30 transition-all text-left group`}>
                                 <span className={`bg-${isUz ? "blue" : "orange"}-50 ${primaryTextClass} w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>🔊</span>
-                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">Talaffuz</span>
+                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">{isUz ? "Talaffuz" : "発音"}</span>
                             </button>
                             <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "orange" : "blue"}-100 hover:bg-${isUz ? "orange" : "blue"}-50/30 transition-all text-left group`}>
                                 <span className={`bg-${isUz ? "orange" : "blue"}-50 text-${isUz ? "orange" : "blue"}-600 w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>✨</span>
-                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">Kartalar</span>
+                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">{isUz ? "Kartalar" : "カード"}</span>
                             </button>
                         </div>
                     </div>
@@ -205,7 +212,7 @@ export default function VocabularyDashboardPage() {
                         {!selectedTopicDetail ? (
                             <div className="h-full flex flex-col items-center justify-center text-center py-24 opacity-30">
                                 <div className="text-6xl mb-6">🏔️</div>
-                                <h3 className="text-2xl font-black text-slate-900">Mavzu tanlanmagan</h3>
+                                <h3 className="text-2xl font-black text-slate-900">{isUz ? "Mavzu tanlanmagan" : "トピックが選択されていません"}</h3>
                             </div>
                         ) : (
                             <div className="h-full flex flex-col">
@@ -216,7 +223,7 @@ export default function VocabularyDashboardPage() {
                                             {selectedTopicDetail.topic.title}
                                         </h1>
                                         <span className={`${primaryBgClass} text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg ${themeShadow}/50 tracking-widest`}>
-                                            {filteredWords.length} TA SO'Z
+                                            {filteredWords.length} {isUz ? "TA SO'Z" : "個の単語"}
                                         </span>
                                     </div>
                                     <p className="text-[15px] text-slate-400 font-bold max-w-xl mx-auto italic">
@@ -274,7 +281,7 @@ export default function VocabularyDashboardPage() {
                                     ) : (
                                         <div className="py-24 text-center opacity-40">
                                             <div className="text-5xl mb-6">🔍</div>
-                                            <p className="text-xs font-black tracking-[0.3em] uppercase">Hech narsa topilmadi</p>
+                                            <p className="text-xs font-black tracking-[0.3em] uppercase">{isUz ? "Hech narsa topilmadi" : "見つかりませんでした"}</p>
                                         </div>
                                     )}
                                 </div>
@@ -345,7 +352,7 @@ export default function VocabularyDashboardPage() {
                                     className="w-52 h-auto relative drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
                                 />
                             </div>
-                            <h4 className="text-xl font-black text-slate-800 mb-4 tracking-tight">Lug'atni Boyiting</h4>
+                            <h4 className="text-xl font-black text-slate-800 mb-4 tracking-tight">{isUz ? "Lug'atni Boyiting" : "語彙を増やす"}</h4>
                             <p className="text-[12px] text-slate-400 font-bold leading-relaxed max-w-[200px] mx-auto">
                                 {isUz
                                     ? "Qidirish va takrorlash orqali yangi marralarni zabt eting."
