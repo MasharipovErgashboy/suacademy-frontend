@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated, fetchWithAuth, BACKEND_URL } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import BookInfoCard from "../../components/BookInfoCard";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { pdfjs } from 'react-pdf';
@@ -58,6 +59,7 @@ export default function EBookReaderPage() {
     const [numPages, setNumPages] = useState<number | null>(null);
     const [scale, setScale] = useState(1.0);
     const [direction, setDirection] = useState(0);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     useEffect(() => {
         // Auth check
@@ -173,11 +175,40 @@ export default function EBookReaderPage() {
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                                 </button>
+
+                                {/* Info Button */}
+                                <div className="w-px h-8 bg-slate-200 mx-2"></div>
+                                <button
+                                    onClick={() => setShowInfoModal(!showInfoModal)}
+                                    className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all shadow-sm ${showInfoModal ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-blue-50 text-blue-600'}`}
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </button>
                             </div>
+
+                            {/* Book Info Modal Overlay (Conditional) */}
+                            <AnimatePresence>
+                                {showInfoModal && (
+                                    <div className="absolute inset-0 z-40 flex items-center justify-center min-h-[600px] pointer-events-none">
+                                        <div className="pointer-events-auto">
+                                            <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl -m-4"></div>
+                                            <div className="relative z-50">
+                                                <button
+                                                    onClick={() => setShowInfoModal(false)}
+                                                    className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-slate-500 hover:text-red-500 z-50 transition-transform hover:scale-110"
+                                                >
+                                                    ✕
+                                                </button>
+                                                <BookInfoCard />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </AnimatePresence>
 
                             {/* PDF Viewer Container */}
                             <div
-                                className="bg-white p-1 shadow-2xl rounded-sm relative min-h-[600px] flex justify-center items-center"
+                                className={`bg-white p-1 shadow-2xl rounded-sm relative min-h-[600px] flex justify-center items-center transition-opacity duration-300 ${showInfoModal ? 'opacity-20 blur-sm pointer-events-none' : 'opacity-100'}`}
                                 onContextMenu={(e) => e.preventDefault()}
                                 style={{
                                     boxShadow: "0 20px 50px -12px rgba(0, 0, 0, 0.25)"
@@ -225,17 +256,18 @@ export default function EBookReaderPage() {
 
                     </div>
                 ) : (
-                    <div className="text-center py-20 animate-in fade-in zoom-in duration-500">
-                        <div className="text-6xl mb-6 grayscale opacity-80">🔒</div>
-                        <h2 className="text-3xl font-bold text-slate-800 mb-3">Kitob topilmadi</h2>
-                        <p className="text-slate-500 max-w-md mx-auto mb-8 text-lg">
-                            Ushbu kitobga ruxsatingiz yo'q yoki fayl hali yuklanmagan.
-                        </p>
+                    // Display Book Info Card when book is strictly NOT found (e.g., waiting for purchase)
+                    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full animate-in fade-in zoom-in duration-500">
+                        <div className="mb-8 text-center">
+                            <h2 className="text-3xl font-bold text-slate-800 mb-2">Ushbu kitob sizda mavjud emas</h2>
+                            <p className="text-slate-500">O'qishni davom ettirish uchun nusxa xarid qiling</p>
+                        </div>
+                        <BookInfoCard />
                         <button
                             onClick={() => router.push('/ebooks')}
-                            className="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all hover:scale-105 shadow-xl"
+                            className="mt-8 text-slate-500 hover:text-slate-800 font-medium underline underline-offset-4"
                         >
-                            Ortga qaytish
+                            Bosh sahifaga qaytish
                         </button>
                     </div>
                 )}
