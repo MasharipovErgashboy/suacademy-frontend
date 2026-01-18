@@ -18,28 +18,27 @@ export default function BookDescription() {
             <div className="prose prose-slate max-w-none">
                 <div className="mb-8">
                     <p className="text-slate-600 text-lg leading-relaxed mb-4">
-                        "Bir Kunda Bir Suhbat" — yapon tilini o'rganuvchilar uchun maxsus tayyorlangan noyob qo'llanma.
-                        Ushbu kitob orqali siz yapon tilida kundalik muloqot qilish ko'nikmalaringizni tez va samarali rivojlantirasiz.
+                        "Bir Kunda Bir Suhbat" — bu shunchaki darslik emas, balki ikki millat vakillarini bog'lovchi noyob ko'prikdir.
                     </p>
                     <p className="text-slate-600 text-lg leading-relaxed">
-                        Har bir dars real hayotiy vaziyatlarga asoslangan bo'lib, yangi so'zlar, grammatik qoidalar va
-                        madaniy jihatlarni o'z ichiga oladi. Kitob JLPT (Japanese Language Proficiency Test) imtihonlariga
-                        tayyorgarlik ko'rayotganlar uchun ham ajoyib yordamchi hisoblanadi.
+                        Ushbu kitob yapon tilidan umuman xabari yo'q o'quvchini <strong>1 oy ichida</strong> kundalik hayotda erkin muloqot qila oladigan darajaga olib chiqishga mo'ljallangan.
+                        Xuddi shunday, yaponiyalik o'quvchilar uchun ham 1 oy davomida o'zbek tilida kundalik mavzularda gaplasha olish imkoniyatini yaratadi.
+                        Bu kitob JLPT imtihonlari uchun emas, balki <strong>jonli va tezkor so'zlashuv</strong> uchun maxsus ishlab chiilgan.
                     </p>
                 </div>
 
                 <h3 className="text-xl font-bold text-slate-800 mb-4">Muallif haqida</h3>
-                <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl flex-shrink-0">
-                        👨‍🏫
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/author_ergashboy.jpg"
+                            alt="Masharipov Ergashboy"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <div>
-                        <h4 className="font-bold text-slate-900 text-lg">Masharipov Ergashboy</h4>
-                        <p className="text-blue-500 font-medium text-sm mb-2">Yapon tili o'qituvchisi & Tarjimon</p>
-                        <p className="text-slate-600 text-sm">
-                            Ko'p yillik tajribaga ega pedagog. Yaponiyada tahsil olgan va faoliyat yuritgan.
-                            O'zbek o'quvchilari uchun yapon tilini o'rgatishning oson va samarali metodikalarini ishlab chiqqan.
-                        </p>
+                        <h4 className="font-bold text-slate-900 text-xl">Masharipov Ergashboy</h4>
                     </div>
                 </div>
             </div>
