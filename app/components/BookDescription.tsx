@@ -24,6 +24,7 @@ export default function BookDescription() {
                         Ushbu kitob yapon tilidan umuman xabari yo'q o'quvchini <strong>1 oy ichida</strong> kundalik hayotda erkin muloqot qila oladigan darajaga olib chiqishga mo'ljallangan.
                         Xuddi shunday, yaponiyalik o'quvchilar uchun ham 1 oy davomida o'zbek tilida kundalik mavzularda gaplasha olish imkoniyatini yaratadi.
                         Bu kitob JLPT imtihonlari uchun emas, balki <strong>jonli va tezkor so'zlashuv</strong> uchun maxsus ishlab chiilgan.
+                        Bu kitob JLPT imtihonlari uchun emas, balki <strong>jonli va tezkor so'zlashuv</strong> uchun maxsus ishlab chiqilgan.
                     </p>
                 </div>
 
@@ -39,6 +40,10 @@ export default function BookDescription() {
                     </div>
                     <div>
                         <h4 className="font-bold text-slate-900 text-xl">Masharipov Ergashboy</h4>
+                        <p className="text-slate-600 text-md mt-2 leading-snug">
+                            O'zbekistonning iqtidorli yoshlaridan biri. Bir vaqtning o'zida 3 ta nufuzli universitetda (<strong>JDU, O‘zDJTU, Kyoto Tachibana</strong>) tahsil oladi.
+                            Dasturlash, lingvistika va psixologiya sohalari mutaxassisi. <strong>"SU Academy"</strong> platformasi va ushbu kitob asoschisi.
+                        </p>
                     </div>
                 </div>
             </div>
