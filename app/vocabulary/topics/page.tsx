@@ -74,7 +74,7 @@ export default function VocabularyDashboardPage() {
 
     const fetchTopicDetail = async (slug: string) => {
         setLoadingDetail(true);
-        setCurrentPage(1); // Reset to first page
+        setCurrentPage(1);
         try {
             const response = await fetchWithAuth(`${BACKEND_URL}/vocabulary/${slug}/`);
             if (!response.ok) throw new Error("Mavzu yuklanmadi");
@@ -102,13 +102,19 @@ export default function VocabularyDashboardPage() {
     };
 
     const isUz = nationality === "uz";
+    const primaryColorClass = isUz ? "blue-600" : "orange-600";
+    const primaryBgClass = isUz ? "bg-blue-600" : "bg-orange-600";
+    const primaryTextClass = isUz ? "text-blue-600" : "text-orange-600";
+    const primaryBorderClass = isUz ? "border-blue-600" : "border-orange-600";
+    const primaryFocusClass = isUz ? "focus:ring-blue-100 focus:border-blue-400" : "focus:ring-orange-100 focus:border-orange-400";
+    const selectionColorClass = isUz ? "selection:bg-blue-100" : "selection:bg-orange-100";
+    const themeShadow = isUz ? "shadow-blue-100" : "shadow-orange-100";
 
     const filteredWords = selectedTopicDetail?.words?.filter(word =>
         word.translation.toLowerCase().includes(searchQuery.toLowerCase()) ||
         word.word.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
-    // Pagination
     const totalPages = Math.ceil(filteredWords.length / wordsPerPage);
     const currentWords = filteredWords.slice(
         (currentPage - 1) * wordsPerPage,
@@ -116,35 +122,35 @@ export default function VocabularyDashboardPage() {
     );
 
     return (
-        <div className="min-h-screen bg-[#F9FAFB] flex flex-col font-sans selection:bg-blue-100">
+        <div className={`min-h-screen bg-[#F9FAFB] flex flex-col font-sans ${selectionColorClass}`}>
             <Header />
 
-            <main className="flex-grow flex flex-col lg:flex-row max-w-[1500px] mx-auto w-full px-4 py-6 gap-6">
+            <main className="flex-grow flex flex-col lg:flex-row max-w-[1500px] mx-auto w-full px-4 py-8 gap-8">
 
-                {/* Column 1: Topics Sidebar (Compact) */}
-                <div className="w-full lg:w-[280px] flex flex-col gap-6 animate-in fade-in slide-in-from-left-4 duration-700">
-                    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/60">
-                        <div className="mb-5 px-1">
+                {/* Column 1: Topics Sidebar */}
+                <div className="w-full lg:w-[280px] flex flex-col gap-8 animate-in fade-in slide-in-from-left-4 duration-700">
+                    <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-200/60">
+                        <div className="mb-6 px-1">
                             <h2 className="text-xl font-black text-slate-800 tracking-tight">
                                 {isUz ? "Mavzular" : "トピック"}
                             </h2>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
                                 {isUz ? "Suhbat mavzulari" : "対話トピック"}
                             </p>
                         </div>
 
-                        <div className="flex flex-col gap-1 max-h-[450px] overflow-y-auto pr-1 custom-scrollbar">
+                        <div className="flex flex-col gap-1.5 max-h-[480px] overflow-y-auto pr-1 custom-scrollbar">
                             {topics.map((topic) => (
                                 <button
                                     key={topic.id}
                                     onClick={() => fetchTopicDetail(topic.slug)}
-                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 text-left group ${selectedTopicDetail?.topic?.slug === topic.slug ? "bg-slate-900 text-white shadow-md shadow-slate-200" : "hover:bg-slate-50 text-slate-600"}`}
+                                    className={`flex items-center gap-3 p-3.5 rounded-2xl transition-all duration-300 text-left group ${selectedTopicDetail?.topic?.slug === topic.slug ? `${primaryBgClass} text-white shadow-lg ${themeShadow}` : "hover:bg-slate-50 text-slate-600"}`}
                                 >
-                                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg transition-all ${selectedTopicDetail?.topic?.slug === topic.slug ? "bg-white/10" : "bg-slate-50 group-hover:bg-blue-50"}`}>
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all ${selectedTopicDetail?.topic?.slug === topic.slug ? "bg-white/10" : `bg-slate-50 group-hover:bg-${isUz ? "blue" : "orange"}-50`}`}>
                                         📖
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className={`font-bold text-[13px] truncate uppercase tracking-wide ${selectedTopicDetail?.topic?.slug === topic.slug ? "text-white" : "text-slate-800"}`}>
+                                        <div className={`font-bold text-[13px] truncate uppercase tracking-wider ${selectedTopicDetail?.topic?.slug === topic.slug ? "text-white" : "text-slate-800"}`}>
                                             {topic.title}
                                         </div>
                                         <div className={`text-[9px] font-black tracking-widest mt-0.5 ${selectedTopicDetail?.topic?.slug === topic.slug ? "text-white/40" : "text-slate-400"}`}>
@@ -156,115 +162,112 @@ export default function VocabularyDashboardPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/60">
-                        <h3 className="text-lg font-black text-slate-800 mb-4 px-1">
+                    <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-200/60">
+                        <h3 className="text-lg font-black text-slate-800 mb-5 px-1">
                             {isUz ? "Vositalar" : "ツール"}
                         </h3>
-                        <div className="flex flex-col gap-2">
-                            <button className="flex items-center gap-3 p-3 rounded-xl border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all text-left group">
-                                <span className="bg-blue-50 text-blue-600 w-9 h-9 rounded-lg flex items-center justify-center text-lg group-hover:scale-105 transition-transform shadow-sm">🔊</span>
+                        <div className="flex flex-col gap-3">
+                            <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "blue" : "orange"}-100 hover:bg-${isUz ? "blue" : "orange"}-50/30 transition-all text-left group`}>
+                                <span className={`bg-${isUz ? "blue" : "orange"}-50 ${primaryTextClass} w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>🔊</span>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">Talaffuz</span>
                             </button>
-                            <button className="flex items-center gap-3 p-3 rounded-xl border border-slate-50 hover:border-orange-100 hover:bg-orange-50/30 transition-all text-left group">
-                                <span className="bg-orange-50 text-orange-600 w-9 h-9 rounded-lg flex items-center justify-center text-lg group-hover:scale-105 transition-transform shadow-sm">✨</span>
+                            <button className={`flex items-center gap-3.5 p-4 rounded-2xl border border-slate-50 hover:border-${isUz ? "orange" : "blue"}-100 hover:bg-${isUz ? "orange" : "blue"}-50/30 transition-all text-left group`}>
+                                <span className={`bg-${isUz ? "orange" : "blue"}-50 text-${isUz ? "orange" : "blue"}-600 w-10 h-10 rounded-xl flex items-center justify-center text-xl group-hover:scale-105 transition-transform shadow-sm`}>✨</span>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-slate-600">Kartalar</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Column 2: Content Area (Table-based & Compact) */}
+                {/* Column 2: Content Area */}
                 <div className="flex-1 min-w-0 flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                    <div className="bg-white rounded-[2rem] p-6 md:p-10 shadow-sm border border-slate-200/60 flex-grow relative overflow-hidden flex flex-col">
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-200/60 flex-grow relative overflow-hidden flex flex-col">
                         {loadingDetail ? (
                             <div className="absolute inset-0 bg-white/70 backdrop-blur-md z-20 flex flex-col items-center justify-center">
-                                <div className="w-10 h-10 border-3 border-slate-100 border-t-slate-900 rounded-full animate-spin"></div>
+                                <div className={`w-12 h-12 border-3 border-slate-100 border-t-${primaryColorClass} rounded-full animate-spin`}></div>
                             </div>
                         ) : null}
 
                         {!selectedTopicDetail ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center py-20 opacity-30">
-                                <div className="text-5xl mb-4">🏔️</div>
-                                <h3 className="text-xl font-black text-slate-900">Mavzu tanlanmagan</h3>
+                            <div className="h-full flex flex-col items-center justify-center text-center py-24 opacity-30">
+                                <div className="text-6xl mb-6">🏔️</div>
+                                <h3 className="text-2xl font-black text-slate-900">Mavzu tanlanmagan</h3>
                             </div>
                         ) : (
                             <div className="h-full flex flex-col">
-                                <div className="mb-8 border-b border-slate-50 pb-6">
-                                    <div className="flex items-center justify-between gap-4 mb-2">
-                                        <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter uppercase italic">
+                                <div className="mb-10 text-center relative">
+                                    <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-${isUz ? "blue" : "orange"}-50/50 rounded-full blur-3xl -z-10`}></div>
+                                    <div className="flex flex-col items-center gap-3 mb-3">
+                                        <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter uppercase italic">
                                             {selectedTopicDetail.topic.title}
                                         </h1>
-                                        <span className="px-3 py-1 bg-slate-900 text-white text-[10px] font-black rounded-lg">
+                                        <span className={`${primaryBgClass} text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg ${themeShadow}/50 tracking-widest`}>
                                             {filteredWords.length} TA SO'Z
                                         </span>
                                     </div>
-                                    <p className="text-sm text-slate-400 font-bold max-w-xl">
-                                        {isUz ? "Asosiy suhbatlar uchun zarur so'zlar va iboralar" : "対話に必要な重要な単語"}
+                                    <p className="text-[15px] text-slate-400 font-bold max-w-xl mx-auto italic">
+                                        {isUz ? "Asosiy suhbatlar uchun eng zarur so'zlar va iboralar jamlanmasi" : "基本対話に必要な最重要単語"}
                                     </p>
                                 </div>
 
                                 {/* Table Header */}
-                                <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-slate-50 rounded-xl mb-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    <div className="col-span-1">Tinglash</div>
-                                    <div className="col-span-4 pl-2">Yaponcha</div>
-                                    <div className="col-span-4">O'zbekcha</div>
-                                    <div className="col-span-3 text-right">Talaffuz</div>
+                                <div className="grid grid-cols-12 gap-6 px-8 py-5 bg-slate-50/50 rounded-3xl mb-6 text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] border border-slate-100">
+                                    <div className="col-span-1 border-r border-slate-200/50">Tinglash</div>
+                                    <div className="col-span-5 pl-4 border-r border-slate-200/50">Yaponcha</div>
+                                    <div className="col-span-6 pl-4">O'zbekcha</div>
                                 </div>
 
-                                <div className="flex flex-col flex-grow divide-y divide-slate-50 overflow-y-auto">
+                                <div className="flex flex-col flex-grow divide-y divide-slate-50 overflow-y-auto pr-2 custom-scrollbar">
                                     {currentWords.length > 0 ? (
                                         currentWords.map((word) => (
                                             <div
                                                 key={word.id}
-                                                className="grid grid-cols-12 gap-4 px-4 py-4 items-center hover:bg-slate-50 transition-colors border-b border-slate-50 group"
+                                                className="grid grid-cols-12 gap-6 px-8 py-5 items-center hover:bg-slate-50/70 transition-all border-b border-slate-50 group rounded-[1.5rem]"
                                             >
                                                 <div className="col-span-1">
                                                     <button
                                                         onClick={() => playAudio(word.id, word.audio)}
-                                                        className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${playingId === word.id ? "bg-green-500 text-white animate-pulse shadow-md" : "bg-white text-slate-300 group-hover:bg-slate-900 group-hover:text-white border border-slate-100"}`}
+                                                        className={`w-11 h-11 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${playingId === word.id ? `${primaryBgClass} text-white border-${primaryColorClass} animate-pulse shadow-lg ${themeShadow}` : `bg-white border-${primaryColorClass}/20 ${primaryTextClass} hover:border-${primaryColorClass} hover:shadow-md hover:bg-${isUz ? "blue" : "orange"}-50/30`}`}
                                                     >
-                                                        <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                        <svg className="w-4.5 h-4.5 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
                                                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
                                                         </svg>
                                                     </button>
                                                 </div>
-                                                <div className="col-span-4 pl-2 font-black text-slate-900 text-[15px] truncate">
+                                                <div className="col-span-5 pl-4 font-black text-slate-800 text-[17px] tracking-tight">
                                                     {word.word}
                                                 </div>
-                                                <div className="col-span-4 font-bold text-slate-500 text-[14px] truncate">
+                                                <div className="col-span-6 pl-4 font-bold text-slate-500 text-[16px] group-hover:text-slate-700 transition-colors leading-relaxed">
                                                     {word.translation}
-                                                </div>
-                                                <div className="col-span-3 text-right text-[11px] font-black text-slate-300 italic uppercase">
-                                                    {isUz ? word.word.split(' [')[1]?.replace(']', '') || '' : ''}
                                                 </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="py-20 text-center opacity-40">
-                                            <div className="text-4xl mb-4">🔍</div>
-                                            <p className="text-[10px] font-black tracking-widest uppercase">Hech narsa topilmadi</p>
+                                        <div className="py-24 text-center opacity-40">
+                                            <div className="text-5xl mb-6">🔍</div>
+                                            <p className="text-xs font-black tracking-[0.3em] uppercase">Hech narsa topilmadi</p>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Pagination Controls */}
                                 {totalPages > 1 && (
-                                    <div className="flex items-center justify-center gap-3 pt-8 border-t border-slate-50">
+                                    <div className="flex items-center justify-center gap-4 pt-10 border-t border-slate-50 mt-6">
                                         <button
                                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                             disabled={currentPage === 1}
-                                            className="p-2 rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                            className="p-3 rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                                             </svg>
                                         </button>
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2.5">
                                             {Array.from({ length: totalPages }).map((_, i) => (
                                                 <button
                                                     key={i + 1}
                                                     onClick={() => setCurrentPage(i + 1)}
-                                                    className={`w-9 h-9 rounded-lg text-xs font-black transition-all ${currentPage === i + 1 ? "bg-slate-900 text-white shadow-lg" : "bg-white border border-slate-100 text-slate-400 hover:border-slate-300"}`}
+                                                    className={`w-11 h-11 rounded-xl text-sm font-black transition-all ${currentPage === i + 1 ? `${primaryBgClass} text-white shadow-xl ${themeShadow}` : "bg-white border border-slate-100 text-slate-400 hover:border-slate-300"}`}
                                                 >
                                                     {i + 1}
                                                 </button>
@@ -273,7 +276,7 @@ export default function VocabularyDashboardPage() {
                                         <button
                                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                             disabled={currentPage === totalPages}
-                                            className="p-2 rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                            className="p-3 rounded-xl border border-slate-100 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
@@ -286,41 +289,49 @@ export default function VocabularyDashboardPage() {
                     </div>
                 </div>
 
-                {/* Column 3: Compact Search/Info */}
+                {/* Column 3: Redesigned Search Panel */}
                 <div className="w-full lg:w-[320px] flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-700">
-                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/60 h-full flex flex-col relative overflow-hidden group">
+                    <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200/10 border border-slate-200/60 h-full flex flex-col relative overflow-hidden group">
 
-                        <div className="relative mb-8 z-10">
+                        <div className="relative mb-10 z-10 scale-[1.02]">
+                            <div className={`absolute inset-0 ${primaryBgClass} blur-[20px] opacity-10 rounded-3xl -z-10 group-focus-within:opacity-20 transition-opacity`}></div>
                             <input
                                 type="text"
-                                placeholder={isUz ? "Qidirish..." : "検索..."}
+                                placeholder={isUz ? "Qidiruv..." : "検索..."}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-11 pr-5 py-4 bg-slate-50 border border-slate-50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-slate-900/5 focus:bg-white focus:border-slate-900/10 font-bold text-sm transition-all shadow-inner"
+                                className={`w-full pl-12 pr-6 py-5 bg-white border border-slate-100 rounded-[1.7rem] focus:outline-none focus:ring-4 ${primaryFocusClass} font-bold text-sm transition-all shadow-sm group-focus-within:shadow-md`}
                             />
-                            <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-slate-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-6 h-6 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:${primaryTextClass} transition-colors`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
 
-                        <div className="flex-1 flex flex-col items-center justify-center text-center z-10 px-2 pb-6">
-                            <div className="relative mb-8 transition-transform duration-700 hover:scale-105">
-                                <div className="absolute inset-0 bg-blue-100/30 blur-[40px] rounded-full animate-pulse"></div>
+                        <div className="flex-1 flex flex-col items-center justify-center text-center z-10 px-2 pb-10">
+                            <div className="relative mb-12 transition-transform duration-1000 group-hover:scale-110">
+                                <div className={`absolute inset-0 bg-${isUz ? "blue" : "orange"}-100/40 blur-[50px] rounded-full animate-pulse`}></div>
                                 <img
                                     src="/vocabulary-search.png"
                                     alt="Search Illustration"
-                                    className="w-48 h-auto relative drop-shadow-xl"
+                                    className="w-52 h-auto relative drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
                                 />
                             </div>
-                            <h4 className="text-lg font-black text-slate-800 mb-3 tracking-tight">Lug'atni Boyiting</h4>
-                            <p className="text-[11px] text-slate-400 font-bold leading-relaxed">
+                            <h4 className="text-xl font-black text-slate-800 mb-4 tracking-tight">Lug'atni Boyiting</h4>
+                            <p className="text-[12px] text-slate-400 font-bold leading-relaxed max-w-[200px] mx-auto">
                                 {isUz
-                                    ? "Qidirish va takrorlash orqali yanada professional darajaga chiqing."
-                                    : "検索と復習を通じて、よりプロフェッショナルなレベルに到達しましょう。"}
+                                    ? "Qidirish va takrorlash orqali yangi marralarni zabt eting."
+                                    : "検索と復習を通じて、新しい目標を達成しましょう。"}
                             </p>
+
+                            <button className={`mt-10 w-full py-4.5 rounded-[1.5rem] ${primaryBgClass} text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl ${themeShadow} transition-all hover:scale-[1.04] active:scale-[0.98] hover:shadow-2xl`}>
+                                {isUz ? "Hozir Boshlang" : "今すぐ開始"}
+                            </button>
                         </div>
 
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50/50 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2"></div>
+                        {/* Abstract background elements */}
+                        <div className={`absolute -top-10 -right-10 w-48 h-48 bg-${isUz ? "blue" : "orange"}-50/50 rounded-full blur-[90px] opacity-60`}></div>
+                        <div className={`absolute -bottom-20 -left-20 w-56 h-56 bg-slate-50 rounded-full blur-[100px]`}></div>
+                        <div className={`absolute top-1/2 left-0 w-1 p-10 h-32 ${primaryBgClass} blur-[60px] opacity-10`}></div>
                     </div>
                 </div>
 
@@ -330,7 +341,7 @@ export default function VocabularyDashboardPage() {
 
             <style jsx>{`
                 .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
+                    width: 5px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
                     background: transparent;
