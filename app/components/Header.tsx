@@ -2,6 +2,7 @@
 
 
 import Link from "next/link";
+import FeedbackModal from "./FeedbackModal";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { translations, Language } from "../lib/translations";
@@ -57,6 +58,8 @@ export default function Header() {
         { label: t.ai, href: "/ai" },
         { label: nationality === "uz" ? "O'yinlar" : "ゲーム", href: "/games" },
     ];
+
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     const isUz = nationality === "uz";
 
@@ -132,15 +135,18 @@ export default function Header() {
                 </div>
             </header>
 
+            {/* Feedback Modal Integration */}
+            <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
+
             {/* Floating Feedback Button */}
-            <Link
-                href="/feedback"
+            <button
+                onClick={() => setIsFeedbackOpen(true)}
                 className={`fixed bottom-8 right-8 z-50 w-16 h-16 text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 animate-bounce-slow ${isUz ? "bg-blue-600 shadow-blue-500/40 hover:bg-blue-700" : "bg-[#FE9B19] shadow-orange-500/40 hover:bg-orange-600"}`}
                 title={isUz ? "Fikr-mulohaza" : "フィードバック"}
             >
                 <span className={`absolute inline-flex h-full w-full rounded-full opacity-20 animate-ping ${isUz ? "bg-blue-400" : "bg-orange-400"}`}></span>
                 <svg className="w-7 h-7 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-            </Link>
+            </button>
             <style jsx global>{`
                 @keyframes bounce-slow {
                     0%, 100% { transform: translateY(0); }

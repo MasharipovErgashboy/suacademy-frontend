@@ -1,0 +1,246 @@
+"use client";
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { fetchWithAuth, BACKEND_URL } from '../lib/auth';
+
+interface FeedbackModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const sectionOptions = [
+    { id: 'video_lessons', label: 'Video darslar', icon: '▶️' },
+    { id: 'ebook', label: 'E-Kitob', icon: '🎧' },
+    { id: 'vocabulary', label: "Lug'at", icon: '🤖' },
+    { id: 'ai_chat', label: 'AI bilan suhbat', icon: '📘' },
+    { id: 'all', label: 'Barchasi Foydali', icon: '' }
+];
+
+export default function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+    const [step, setStep] = useState('form'); // 'form' | 'success'
+    const [loading, setLoading] = useState(false);
+
+    // Form State
+    const [rating, setRating] = useState(0);
+    const [benefits, setBenefits] = useState('');
+    const [usefulSections, setUsefulSections] = useState<string[]>([]);
+    const [suggestions, setSuggestions] = useState('');
+
+    const toggleSection = (id: string) => {
+        if (id === 'all') {
+            if (usefulSections.includes('all')) {
+                setUsefulSections([]);
+            } else {
+                setUsefulSections(sectionOptions.map(s => s.id));
+            }
+        } else {
+            setUsefulSections(prev => {
+                const newSections = prev.includes(id)
+                    ? prev.filter(s => s !== id)
+                    : [...prev, id];
+
+                // Handle 'all' logic
+                const allOtherIds = sectionOptions.map(s => s.id).filter(s => s !== 'all');
+                const isAllSelected = allOtherIds.every(sid => newSections.includes(sid));
+
+                if (isAllSelected && !newSections.includes('all')) return [...newSections, 'all'];
+                if (!isAllSelected && newSections.includes('all')) return newSections.filter(s => s !== 'all');
+
+                return newSections;
+            });
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (rating === 0) return; // Basic validation
+        setLoading(true);
+
+        try {
+            const res = await fetchWithAuth(`${BACKEND_URL}/feedbacks/v1/feedbacks/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    rating,
+                    benefits,
+                    useful_sections: usefulSections,
+                    suggestions
+                })
+            });
+
+            if (res.ok) {
+                setStep('success');
+                setTimeout(() => {
+                    onClose();
+                    // Reset form after closing
+                    setTimeout(() => {
+                        setStep('form');
+                        setRating(0);
+                        setBenefits('');
+                        setUsefulSections([]);
+                        setSuggestions('');
+                    }, 500);
+                }, 3000);
+            }
+        } catch (err) {
+            console.error('Feedback error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    {/* Backdrop */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"
+                    />
+
+                    {/* Modal Container */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="fixed inset-0 z-[101] flex items-center justify-center p-4"
+                        onClick={(e) => e.stopPropagation()} // Prevent clicking backdrop
+                    >
+                        <div className="bg-[#F8FCFB] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative min-h-[500px] flex flex-col justify-center">
+
+                            {/* Close Button */}
+                            <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors z-10">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+
+                            <AnimatePresence mode="wait">
+                                {step === 'form' ? (
+                                    <motion.div
+                                        key="form"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 20 }}
+                                        className="p-8 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar"
+                                    >
+                                        {/* Step 1: Rating */}
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">1</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">Platforma haqida umumiy bahoyingiz</h3>
+                                            </div>
+                                            <div className="flex gap-2 pl-11">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <button
+                                                        key={star}
+                                                        onClick={() => setRating(star)}
+                                                        className={`transition-transform hover:scale-110 ${rating >= star ? 'text-amber-400' : 'text-slate-200'}`}
+                                                    >
+                                                        <svg className={`w-8 h-8 ${rating >= star ? 'fill-current' : 'fill-none stroke-current stroke-2'}`} viewBox="0 0 24 24">
+                                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                                        </svg>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Step 2: Benefits */}
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">2</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">Ushbu platforma sizga qanday foyda berdi?</h3>
+                                            </div>
+                                            <div className="pl-11">
+                                                <input
+                                                    type="text"
+                                                    value={benefits}
+                                                    onChange={(e) => setBenefits(e.target.value)}
+                                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
+                                                    placeholder="Fikringizni yozing..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Step 3: Useful Sections */}
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">3</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">Qaysi bo'lim sizga eng foydali bo'ldi?</h3>
+                                            </div>
+                                            <div className="pl-11 space-y-2">
+                                                {sectionOptions.map((option) => (
+                                                    <label key={option.id} className="flex items-center gap-3 cursor-pointer group select-none">
+                                                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${usefulSections.includes(option.id) ? 'bg-blue-500 border-blue-500' : 'border-slate-300 bg-white group-hover:border-blue-400'}`}>
+                                                            {usefulSections.includes(option.id) && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                                            )}
+                                                        </div>
+                                                        <span className="flex items-center gap-2 text-slate-700 font-medium">
+                                                            {option.icon && <span>{option.icon}</span>}
+                                                            {option.label}
+                                                        </span>
+                                                        {/* Hidden checkbox for semantic correctness */}
+                                                        <input type="checkbox" className="hidden" onChange={() => toggleSection(option.id)} checked={usefulSections.includes(option.id)} />
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Step 4: Suggestions */}
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/30">4</div>
+                                                <h3 className="font-semibold text-slate-800 text-lg">Yana nimalarni qo'shishimizni xohlaysiz?</h3>
+                                            </div>
+                                            <div className="pl-11">
+                                                <input
+                                                    type="text"
+                                                    value={suggestions}
+                                                    onChange={(e) => setSuggestions(e.target.value)}
+                                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
+                                                    placeholder="Takliflaringiz..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={handleSubmit}
+                                            disabled={loading || rating === 0}
+                                            className="w-full py-4 bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                                        >
+                                            {loading ? 'Yuborilmoqda...' : "Jo'natish"}
+                                        </button>
+
+                                    </motion.div>
+                                ) : (
+                                    // Success State
+                                    <motion.div
+                                        key="success"
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        className="p-12 flex flex-col items-center text-center"
+                                    >
+                                        <motion.div
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                                            className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6"
+                                        >
+                                            <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                        </motion.div>
+                                        <h2 className="text-3xl font-extrabold text-slate-800 mb-2">Rahmat!</h2>
+                                        <p className="text-slate-500 text-lg font-medium">Sizning fikringiz biz uchun juda muhim.</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
+    );
+}
