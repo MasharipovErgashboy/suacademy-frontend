@@ -9,7 +9,27 @@ import dynamic from "next/dynamic";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { pdfjs } from 'react-pdf';
 
-// ... (imports remain)
+// Dynamically import react-pdf components with no SSR
+const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), {
+    ssr: false,
+    loading: () => <div className="animate-spin w-12 h-12 border-4 rounded-full border-t-transparent border-blue-500"></div>
+});
+
+const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), {
+    ssr: false
+});
+
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Configure worker options object to be passed directly to Document
+// This is the most robust way to ensure the worker is loaded correctly in v7
+const pdfOptions = {
+    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+    workerSrc: `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+};
 
 const variants: Variants = {
     enter: (direction: number) => ({
