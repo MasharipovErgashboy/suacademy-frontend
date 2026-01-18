@@ -22,15 +22,6 @@ const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), {
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configure worker options object to be passed directly to Document
-// This is the most robust way to ensure the worker is loaded correctly in v7
-const pdfOptions = {
-    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-    cMapPacked: true,
-    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
-    workerSrc: `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
-};
-
 const variants: Variants = {
     enter: (direction: number) => ({
         x: direction > 0 ? 500 : -500,
@@ -205,7 +196,6 @@ export default function EBookReaderPage() {
                                             <p>Xatolik yuz berdi</p>
                                         </div>
                                     }
-                                    options={pdfOptions}
                                 >
                                     <AnimatePresence initial={false} custom={direction} mode="wait">
                                         <motion.div
