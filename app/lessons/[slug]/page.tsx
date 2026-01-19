@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import confetti from "canvas-confetti";
 
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+// ReactPlayer import removed because we are using custom implementation
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -48,6 +48,7 @@ export default function LessonDetailPage() {
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -69,6 +70,11 @@ export default function LessonDetailPage() {
         window.addEventListener("user-updated", handleUserUpdate);
         return () => window.removeEventListener("user-updated", handleUserUpdate);
     }, [slug, router]);
+
+    // Reset video player state when lesson (slug) changes
+    useEffect(() => {
+        setIsVideoPlaying(false);
+    }, [slug]);
 
     // Scroll active lesson into view in sidebar
     useEffect(() => {
