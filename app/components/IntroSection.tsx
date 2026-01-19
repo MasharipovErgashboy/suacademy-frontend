@@ -8,6 +8,7 @@ interface IntroData {
     title: string;
     content: string;
     youtube_video_url: string;
+    youtube_id: string | null;
 }
 
 export default function IntroSection() {
@@ -50,14 +51,7 @@ export default function IntroSection() {
         return null;
     }
 
-    // Extract YouTube video ID
-    const getYouTubeId = (url: string) => {
-        const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^?&"'>]+)/);
-        return match ? match[1] : null;
-    };
-
-    const videoId = getYouTubeId(intro.youtube_video_url);
-
+    const { youtube_id } = intro;
     const isUz = nationality === "uz";
 
     return (
@@ -65,12 +59,12 @@ export default function IntroSection() {
             {/* Video Section - Custom Styled */}
             <div className={`relative rounded-3xl overflow-hidden shadow-2xl p-[4px] ${isUz ? "bg-gradient-to-br from-blue-500 to-purple-600" : "bg-gradient-to-br from-[#FE9B19] to-red-600"}`}>
                 <div className="relative rounded-[22px] overflow-hidden bg-black">
-                    {videoId ? (
+                    {youtube_id ? (
                         <div className="relative w-full aspect-video group">
                             {/* YouTube iframe with hidden controls */}
                             <iframe
                                 className="w-full h-full scale-[1.02]"
-                                src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0&controls=1&fs=1&iv_load_policy=3&cc_load_policy=0&autohide=1`}
+                                src={`https://www.youtube.com/embed/${youtube_id}?modestbranding=1&rel=0&showinfo=0&controls=1&fs=1&iv_load_policy=3&cc_load_policy=0&autohide=1`}
                                 title="Video Player"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
