@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import confetti from "canvas-confetti";
 
-const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
