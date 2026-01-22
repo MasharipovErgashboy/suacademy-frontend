@@ -7,6 +7,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import axios from "axios";
+import { BACKEND_URL } from "../lib/auth";
 
 interface SwiperItem {
     id: number;
@@ -30,7 +31,7 @@ export default function HeroSwiper() {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/home/swiper/", {
+            .get(`${BACKEND_URL}/home/swiper/`, {
                 headers: {
                     "Accept-Language": nationality,
                 },
@@ -77,7 +78,7 @@ export default function HeroSwiper() {
                             <div
                                 className="relative w-full h-64 md:h-80 lg:h-96 bg-cover bg-center"
                                 style={{
-                                    backgroundImage: `url(http://127.0.0.1:8000${slide.image})`,
+                                    backgroundImage: `url(${BACKEND_URL}${slide.image})`,
                                 }}
                             >
                                 <div className={`absolute inset-0 flex items-start pt-8 md:pt-12 ${isUz ? "bg-gradient-to-r from-blue-900/90 to-transparent" : "bg-gradient-to-r from-[#FE9B19]/90 to-transparent"}`}>

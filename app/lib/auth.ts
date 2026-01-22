@@ -145,5 +145,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
 };
 
 // API base URL
-export const API_BASE_URL = "http://127.0.0.1:8000/auth";
-export const BACKEND_URL = "http://127.0.0.1:8000";
+// For local development: http://127.0.0.1:8000
+// For production: https://suacademy-backend.onrender.com
+export const API_BASE_URL = "https://suacademy-backend.onrender.com/auth";
+export const BACKEND_URL = "https://suacademy-backend.onrender.com";

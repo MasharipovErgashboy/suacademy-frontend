@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "../lib/auth";
 
 interface IntroData {
     id: number;
@@ -23,7 +24,7 @@ export default function IntroSection() {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/home/intro/", {
+            .get(`${BACKEND_URL}/home/intro/`, {
                 headers: {
                     "Accept-Language": nationality,
                 },

@@ -136,7 +136,7 @@ function HeaderContent() {
                                 <Link href="/profile" className="flex items-center gap-3 pl-1 pr-2 py-1 rounded-full hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all group">
                                     <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:scale-105 transition-transform">
                                         <img
-                                            src={user.image ? `http://127.0.0.1:8000${user.image}` : `https://ui-avatars.com/api/?name=${user.username}&background=0D8ABC&color=fff`}
+                                            src={user.image ? `${API_BASE_URL.replace('/auth', '')}${user.image}` : `https://ui-avatars.com/api/?name=${user.username}&background=0D8ABC&color=fff`}
                                             alt={user.username}
                                             className="w-full h-full object-cover"
                                         />
@@ -247,7 +247,7 @@ function HeaderContent() {
                                             >
                                                 <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-300">
                                                     <img
-                                                        src={user.image ? `http://127.0.0.1:8000${user.image}` : `https://ui-avatars.com/api/?name=${user.username}&background=0D8ABC&color=fff`}
+                                                        src={user.image ? `${API_BASE_URL.replace('/auth', '')}${user.image}` : `https://ui-avatars.com/api/?name=${user.username}&background=0D8ABC&color=fff`}
                                                         alt={user.username}
                                                         className="w-full h-full object-cover"
                                                     />

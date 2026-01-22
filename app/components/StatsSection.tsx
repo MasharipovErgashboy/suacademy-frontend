@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../lib/auth";
 
 export default function StatsSection() {
     const [nationality, setNationality] = useState<string>("uz");
@@ -17,7 +18,7 @@ export default function StatsSection() {
         if (saved) setNationality(saved);
 
         // Fetch Stats
-        fetch("http://127.0.0.1:8000/home/stats/")
+        fetch(`${BACKEND_URL}/home/stats/`)
             .then(res => res.json())
             .then(data => setStats(data))
             .catch(err => console.error(err));
