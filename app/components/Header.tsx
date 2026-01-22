@@ -75,7 +75,7 @@ export default function Header() {
                             </div>
                         ) : (
                             <div className="flex items-center text-2xl font-black tracking-tighter">
-                                <span className="text-white bg-[#FE9B19] px-2 rounded-md mr-1">SU</span>
+                                <span className="text-[#FE9B19] mr-0.5">SU</span>
                                 <span className="text-slate-900">Academy</span>
                             </div>
                         )}

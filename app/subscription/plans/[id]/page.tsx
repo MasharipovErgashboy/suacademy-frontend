@@ -44,7 +44,7 @@ export default function PaymentPage() {
         setLoading(true);
         setError("");
         try {
-            const response = await fetchWithAuth(`${BACKEND_URL}/subscription/plans/${planId}/`);
+            const response = await fetchWithAuth(`${BACKEND_URL}/subscriptions/plans/${planId}/`);
             if (!response.ok) {
                 if (response.status === 404) throw new Error("Tarif topilmadi");
                 throw new Error("Ma'lumotlarni yuklashda xatolik");
@@ -65,7 +65,7 @@ export default function PaymentPage() {
         setError("");
 
         try {
-            const response = await fetchWithAuth(`${BACKEND_URL}/subscription/pay/`, {
+            const response = await fetchWithAuth(`${BACKEND_URL}/subscriptions/pay/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

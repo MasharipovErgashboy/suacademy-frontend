@@ -156,7 +156,7 @@ export default function SubscriptionPage() {
                                     <div className="mb-8">
                                         <span className="text-4xl font-black text-slate-900">0</span>
                                         <span className="text-slate-500 font-medium ml-1">
-                                            {isUz ? "so'm / oy" : "円 / 月"}
+                                            {isUz ? "so'm / oy" : "$"}
                                         </span>
                                     </div>
 

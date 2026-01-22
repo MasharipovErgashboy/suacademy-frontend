@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import confetti from "canvas-confetti";
+
+// ReactPlayer import removed because we are using custom implementation
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../lib/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -45,6 +48,7 @@ export default function LessonDetailPage() {
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -66,6 +70,11 @@ export default function LessonDetailPage() {
         window.addEventListener("user-updated", handleUserUpdate);
         return () => window.removeEventListener("user-updated", handleUserUpdate);
     }, [slug, router]);
+
+    // Reset video player state when lesson (slug) changes
+    useEffect(() => {
+        setIsVideoPlaying(false);
+    }, [slug]);
 
     // Scroll active lesson into view in sidebar
     useEffect(() => {
@@ -220,14 +229,42 @@ export default function LessonDetailPage() {
                                     </Link>
                                 </div>
                             ) : current_lesson.youtube_id ? (
-                                <iframe
-                                    src={`https://www.youtube.com/embed/${current_lesson.youtube_id}?rel=0&modestbranding=1&iv_load_policy=3&controls=1&disablekb=1&playsinline=1`}
-                                    title={current_lesson.title}
-                                    className="w-full h-full"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    style={{ border: 0 }}
-                                />
+                                <div className="relative w-full h-full group">
+                                    {!isVideoPlaying ? (
+                                        <div
+                                            onClick={() => setIsVideoPlaying(true)}
+                                            className="absolute inset-0 w-full h-full bg-slate-900 flex items-center justify-center cursor-pointer group z-10"
+                                        >
+                                            <img
+                                                src={current_lesson.image || `https://img.youtube.com/vi/${current_lesson.youtube_id}/maxresdefault.jpg`}
+                                                alt={current_lesson.title}
+                                                className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80";
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600/90 group-hover:border-transparent">
+                                                    <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M6.3 2.841A.7.7 0 017 2.5a.7.7 0 01.442.159l8.4 6.3a.7.7 0 010 1.082l-8.4 6.3A.7.7 0 016.3 15.659V2.841z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div className="absolute bottom-6 left-6 right-6">
+                                                <h3 className="text-white text-xl font-bold line-clamp-1 drop-shadow-md">{current_lesson.title}</h3>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${current_lesson.youtube_id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&controls=1&disablekb=1&playsinline=1`}
+                                            title={current_lesson.title}
+                                            className="w-full h-full"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            style={{ border: 0 }}
+                                        />
+                                    )}
+                                </div>
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900 text-slate-500">
                                     <p>{isUz ? "Video topilmadi" : "ビデオが見つかりません"}</p>
