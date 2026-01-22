@@ -4,12 +4,12 @@
 import Link from "next/link";
 import FeedbackModal from "./FeedbackModal";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { translations, Language } from "../lib/translations";
 import { API_BASE_URL, fetchWithAuth, isAuthenticated } from "../lib/auth";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function Header() {
+function HeaderContent() {
 
     const pathname = usePathname();
     const [nationality, setNationality] = useState<Language>("uz");
@@ -307,5 +307,13 @@ export default function Header() {
                 }
             `}</style>
         </>
+    );
+}
+
+export default function Header() {
+    return (
+        <Suspense fallback={<div className="h-20"></div>}>
+            <HeaderContent />
+        </Suspense>
     );
 }

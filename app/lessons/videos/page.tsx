@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BACKEND_URL, fetchWithAuth, isAuthenticated } from "../../lib/auth";
@@ -23,7 +23,7 @@ interface PaginationData {
     previous: string | null;
 }
 
-export default function VideoLessonsPage() {
+function VideoLessonsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1");
@@ -221,6 +221,14 @@ export default function VideoLessonsPage() {
             </main>
             <Footer />
         </div>
+    );
+}
+
+export default function VideoLessonsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50">Loading...</div>}>
+            <VideoLessonsContent />
+        </Suspense>
     );
 }
 
