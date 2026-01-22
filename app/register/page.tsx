@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL, isAuthenticated } from "../lib/auth";
+import JapaneseLiveBackground from "../components/backgrounds/JapaneseLiveBackground";
+import UzbekLiveBackground from "../components/backgrounds/UzbekLiveBackground";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -111,24 +113,13 @@ export default function RegisterPage() {
         }
     };
 
+
+
     return (
-        <div className={`min-h-screen relative flex items-center justify-center p-4 overflow-hidden ${isUz ? "bg-blue-50" : "bg-rose-50"}`}>
-            {/* Live Animated Vibrant Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {isUz ? (
-                    <>
-                        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-400/20 rounded-full blur-[100px] animate-blob"></div>
-                        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-indigo-400/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-                        <div className="absolute bottom-[-10%] left-[20%] w-[55%] h-[55%] bg-sky-400/20 rounded-full blur-[100px] animate-blob animation-delay-4000"></div>
-                    </>
-                ) : (
-                    <>
-                        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-orange-400/20 rounded-full blur-[100px] animate-blob"></div>
-                        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-rose-400/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-                        <div className="absolute bottom-[-10%] left-[20%] w-[55%] h-[55%] bg-amber-400/20 rounded-full blur-[100px] animate-blob animation-delay-4000"></div>
-                    </>
-                )}
-            </div>
+        <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+            {/* Live Animated Background */}
+            {isUz ? <JapaneseLiveBackground /> : <UzbekLiveBackground />}
+
 
             <div className="relative z-10 w-full max-w-md">
                 <div className="text-center mb-8 animate-in fade-in zoom-in duration-700">
